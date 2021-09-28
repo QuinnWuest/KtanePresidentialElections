@@ -76,7 +76,7 @@ public class presidentialElectionsScript : MonoBehaviour {
     int nextPlace = 0;
 
     // Other variables
-
+    //                                       A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q,  R, S, T, U, V, W, X, Y, Z
     static readonly int[] scrabbleScores = { 1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10 };
     static readonly char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
     static readonly int[] numbersAlphabeticalOrder = { 19, 9,18,16,5,4, 12,10,0,7,14, 2,17,15,6,3, 13,11,1,8 };
@@ -174,7 +174,7 @@ public class presidentialElectionsScript : MonoBehaviour {
                     break;
                 case 1: // length of color names
                     keys = new double[4] { colorNames[colors[0]].Length, colorNames[colors[1]].Length, colorNames[colors[2]].Length, colorNames[colors[3]].Length };
-                    for(int j = 3; j > -1; j--) // this is an incredibly silly way of breaking ties but my brain is of an incredibly silly size
+                    for(int j = 0; j > 4; j--) // this is an incredibly silly way of breaking ties but my brain is of an incredibly silly size
                         keys[j] += j * .1;
                     Array.Sort(keys, items);
                     Array.Reverse(items);
@@ -195,7 +195,7 @@ public class presidentialElectionsScript : MonoBehaviour {
                         scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][spacelessCandidateNames[candidates[1]].Length - 1])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][spacelessCandidateNames[candidates[1]].Length - 2])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][spacelessCandidateNames[candidates[1]].Length - 3])],
                         scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[2]][spacelessCandidateNames[candidates[2]].Length - 1])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[2]][spacelessCandidateNames[candidates[2]].Length - 2])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[2]][spacelessCandidateNames[candidates[2]].Length - 3])],
                         scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[3]][spacelessCandidateNames[candidates[3]].Length - 1])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[3]][spacelessCandidateNames[candidates[3]].Length - 2])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[3]][spacelessCandidateNames[candidates[3]].Length - 3])]};
-                    for (int j = 3; j > -1; j--)
+                    for (int j = 0; j > 4; j--)
                         keys[j] += j * .1;
                     Array.Sort(keys, items);
                     Array.Reverse(items);
@@ -206,7 +206,7 @@ public class presidentialElectionsScript : MonoBehaviour {
                     break;
                 case 6: // number next to party names
                     keys = new double[4] { partyNumbers[parties[0]], partyNumbers[parties[1]], partyNumbers[parties[2]], partyNumbers[parties[3]] };
-                    for (int j = 3; j > -1; j--)
+                    for (int j = 0; j > 4; j--)
                         keys[j] += j * .1;
                     Array.Sort(keys, items);
                     Array.Reverse(items);
@@ -226,7 +226,7 @@ public class presidentialElectionsScript : MonoBehaviour {
                     break;
                 case 9: // number next to color names
                     keys = new double[4] { colorNumbers[colors[0]], colorNumbers[colors[1]], colorNumbers[colors[2]], colorNumbers[colors[3]] };
-                    for (int j = 3; j > -1; j--)
+                    for (int j = 0; j > 4; j--)
                         keys[j] += j * .1;
                     Array.Sort(keys, items);
                     Array.Reverse(items);
@@ -234,7 +234,7 @@ public class presidentialElectionsScript : MonoBehaviour {
                     break;
                 case 10: // length of party names
                     keys = new double[4] { spacelessPartyNames[parties[0]].Length, spacelessPartyNames[parties[1]].Length, spacelessPartyNames[parties[2]].Length, spacelessPartyNames[parties[3]].Length };
-                    for (int j = 3; j > -1; j--)
+                    for (int j = 0; j > 4; j--)
                         keys[j] += j * .1;
                     Array.Sort(keys, items);
                     Array.Reverse(items);
@@ -253,7 +253,7 @@ public class presidentialElectionsScript : MonoBehaviour {
                         scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][0])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][1])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][2])],
                         scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[2]][0])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[2]][1])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[2]][2])],
                         scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[3]][0])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[3]][1])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[3]][2])] };
-                    for (int j = 3; j > -1; j--)
+                    for (int j = 0; j > 4; j--)
                         keys[j] += j * .1;
                     Array.Sort(keys, items);
                     Array.Reverse(items);
@@ -264,7 +264,7 @@ public class presidentialElectionsScript : MonoBehaviour {
                         scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][0])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]].Last())],
                         scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[2]][0])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[2]].Last())],
                         scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[3]][0])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[3]].Last())],};
-                    for (int j = 3; j > -1; j--)
+                    for (int j = 0; j > 4; j--)
                         keys[j] += j * .1;
                     Array.Sort(keys, items);
                     Array.Reverse(items);
@@ -272,7 +272,7 @@ public class presidentialElectionsScript : MonoBehaviour {
                     break;
                 case 15: // length of names
                     keys = new double[4] { spacelessCandidateNames[candidates[0]].Length, spacelessCandidateNames[candidates[1]].Length, spacelessCandidateNames[candidates[2]].Length, spacelessCandidateNames[candidates[3]].Length };
-                    for (int j = 3; j > -1; j--)
+                    for (int j = 0; j > 4; j--)
                         keys[j] += j * .1;
                     Array.Sort(keys, items);
                     Array.Reverse(items);
