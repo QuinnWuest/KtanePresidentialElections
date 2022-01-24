@@ -556,7 +556,7 @@ public class presidentialElectionsScript : MonoBehaviour {
     }
 
 #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"Use [!{0} cycle] to highlight all 4 buttons. [!{0} highlight # # #] to highlight whatever buttons you want. [!{0} press # # # #] to press a series of 1-4 buttons. Use either 1-2-3-4 (reading order) or TL-TR-BL-BR.";
+    private readonly string TwitchHelpMessage = @"Use [!{0} cycle] to highlight all 4 buttons. [!{0} highlight # # #] to highlight whatever buttons you want. [!{0} press # # # #] to press a series of 1-4 buttons. Use numbers 1 to 4 (represents buttons in reading order)";
 #pragma warning restore 414
 
     MethodInfo highlightMethod = null;
