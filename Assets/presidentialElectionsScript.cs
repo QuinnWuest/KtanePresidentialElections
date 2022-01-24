@@ -4,6 +4,9 @@ using KModkit;
 using System;
 using Random = UnityEngine.Random;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
+using System.Reflection;
 
 public class presidentialElectionsScript : MonoBehaviour {
 
@@ -21,6 +24,7 @@ public class presidentialElectionsScript : MonoBehaviour {
     public Sprite[] sprites;
     public TextMesh screenText;
     public KMSelectable[] btnSelectables;
+    public KMHighlightable[] btnHighlights;
 
     static int moduleIdCounter = 1;
     int moduleId;
@@ -549,5 +553,103 @@ public class presidentialElectionsScript : MonoBehaviour {
     void DebugMsg(string message)
     {
         Debug.LogFormat("[Presidential Elections #{0}] {1}", moduleId, message);
+    }
+
+#pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"Use [!{0} cycle] to highlight all 4 buttons. [!{0} highlight # # #] to highlight whatever buttons you want. [!{0} press # # # #] to press a series of 1-4 buttons. Use numbers 1 to 4 (represents buttons in reading order)";
+#pragma warning restore 414
+
+    MethodInfo highlightMethod = null;
+    object enumValue = null;
+    Component[] highlights = null;
+
+    private IEnumerator ProcessTwitchCommand(string command)
+    {
+        command = command.Trim();
+        if(Regex.IsMatch(command, "^cycle$", RegexOptions.IgnoreCase))
+        {
+            yield return null;
+            if (!Application.isEditor)
+            {
+                if (highlights == null || enumValue == null || highlightMethod == null) SetupHighlightables();
+
+                for (int i = 0; i < 4; i++)
+                {
+                    btnSelectables[i].OnHighlight();
+                    highlightMethod.Invoke(highlights[i], new[] { true, enumValue });
+                    yield return new WaitForSecondsRealtime(3f);
+                    highlightMethod.Invoke(highlights[i], new[] { false, enumValue });
+                    btnSelectables[i].OnHighlightEnded();
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    btnSelectables[i].OnHighlight();
+                    yield return new WaitForSecondsRealtime(3f);
+                    btnSelectables[i].OnHighlightEnded();
+                }
+            }
+
+        }
+        else if (Regex.IsMatch(command, @"^highlight(\s+[1-4])+$"))
+        {
+            yield return null;
+            int[] buttons = command.Split().Skip(1).Select(n => int.Parse(n) - 1).ToArray();
+            if (!Application.isEditor)
+            {
+                if(highlights == null || enumValue == null || highlightMethod == null) SetupHighlightables();
+
+                foreach (int button in buttons)
+                {
+                    btnSelectables[button].OnHighlight();
+                    highlightMethod.Invoke(highlights[button], new[] { true, enumValue });
+                    yield return new WaitForSecondsRealtime(3f);
+                    highlightMethod.Invoke(highlights[button], new[] { false, enumValue });
+                    btnSelectables[button].OnHighlightEnded();
+                }
+            }
+            else
+            {
+                foreach (int button in buttons)
+                {
+                    btnSelectables[button].OnHighlight();
+                    yield return new WaitForSecondsRealtime(3f);
+                    btnSelectables[button].OnHighlightEnded();
+                }
+            }
+        }
+        else if (Regex.IsMatch(command, @"^press(\s+[1-4]){1,4}$"))
+        {
+            yield return null;
+            int[] buttons = command.Split().Skip(1).Select(n => int.Parse(n) - 1).ToArray();
+            foreach(int button in buttons)
+            {
+                btnSelectables[button].OnInteract();
+                yield return new WaitForSecondsRealtime(.1f);
+            }
+        }
+
+    }
+
+    private void SetupHighlightables()
+    {
+        highlights = btnHighlights.Select(km => km.GetComponent("Highlightable")).ToArray();
+        if (highlights.Length == 0) return;
+        var e = highlights[0].GetType().GetNestedType("HighlightTypeEnum", BindingFlags.Public);
+        highlightMethod = highlights[0].GetType().GetMethod("On", BindingFlags.NonPublic | BindingFlags.Instance, null, new[] { typeof(bool), e }, null);
+        enumValue = Enum.ToObject(e, 1);
+    }
+
+    private IEnumerator TwitchHandleForcedSolve()
+    {
+        List<int> nbs = Enumerable.Range(0, 4).Where(n => !pressedButtons[n]).ToList();
+        nbs = nbs.OrderBy(n => candidatePlacement[n]).ToList();
+        foreach(int nb in nbs)
+        {
+            btnSelectables[nb].OnInteract();
+            yield return new WaitForSecondsRealtime(.1f);
+        }
     }
 }
