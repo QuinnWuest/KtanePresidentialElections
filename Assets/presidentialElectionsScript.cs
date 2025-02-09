@@ -9,7 +9,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using Assets;
 
-public class presidentialElectionsScript : MonoBehaviour {
+public class presidentialElectionsScript : MonoBehaviour
+{
 
     // Standard module variables
     public KMBombModule Module;
@@ -81,7 +82,7 @@ public class presidentialElectionsScript : MonoBehaviour {
     //                                       A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q,  R, S, T, U, V, W, X, Y, Z
     static readonly int[] scrabbleScores = { 1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10 };
     static readonly char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
-    static readonly int[] numbersAlphabeticalOrder = { 19, 9,18,16,5,4, 12,10,0,7,14, 2,17,15,6,3, 13,11,1,8 };
+    static readonly int[] numbersAlphabeticalOrder = { 19, 9, 18, 16, 5, 4, 12, 10, 0, 7, 14, 2, 17, 15, 6, 3, 13, 11, 1, 8 };
     byte whiteness = 255;
 
     private void Awake()
@@ -104,28 +105,19 @@ public class presidentialElectionsScript : MonoBehaviour {
         // Generate the candidates
         for (int i = 0; i < 4; i++)
         {
-            var test = true;
-            if (!test)
-            {
-                while (colors.Where(x => x == colors[i]).Count() > 1 || colors[i] == 99)
-                    colors[i] = Random.Range(0, colorNames.Length);
-                while (parties.Where(x => x == parties[i]).Count() > 1 || parties[i] == 99)
-                    parties[i] = Random.Range(0, partyNames.Length);
-                while (candidates.Where(x => x == candidates[i]).Count() > 1 || candidates[i] == 99)
-                    candidates[i] = Random.Range(0, candidateNames.Length);
-            }
-            else {
-                colors = new[] { 5, 13, 7, 10 };
-                parties = new[] { 10, 6, 15, 12 };
-                candidates = new[] { 7, 3, 50, 35 };
-            }
+            while (colors.Where(x => x == colors[i]).Count() > 1 || colors[i] == 99)
+                colors[i] = Random.Range(0, colorNames.Length);
+            while (parties.Where(x => x == parties[i]).Count() > 1 || parties[i] == 99)
+                parties[i] = Random.Range(0, partyNames.Length);
+            while (candidates.Where(x => x == candidates[i]).Count() > 1 || candidates[i] == 99)
+                candidates[i] = Random.Range(0, candidateNames.Length);
             btnRenderers[i].material = colorMats[colors[i]];
             if (colors[i] >= 7 && colors[i] <= 12)
                 spriteRenderers[i].color = Color.white;
             else
                 spriteRenderers[i].color = Color.black;
             spriteRenderers[i].sprite = sprites[parties[i]];
-            DebugMsg("Button #" + (i+1) + " is " + colorNames[colors[i]] + ", has the " + partyNames[parties[i]] + " symbol, and represents the candidate " + candidateNames[candidates[i]] + ".");
+            DebugMsg("Button #" + (i + 1) + " is " + colorNames[colors[i]] + ", has the " + partyNames[parties[i]] + " symbol, and represents the candidate " + candidateNames[candidates[i]] + ".");
         }
 
         // Find the correct voting method
@@ -135,12 +127,12 @@ public class presidentialElectionsScript : MonoBehaviour {
 
         DebugMsg("Simulating tournament...");
         DebugMsg("Round one!");
-        
+
         for (int i = 0; i < 4; i++)
         {
             if (values[i * 2] >= values[i * 2 + 1]) { secondRound[i] = i * 2; }
             else { secondRound[i] = i * 2 + 1; }
-            DebugMsg("Comparing " + values[i*2] + " (" + votingMethodNames[i*2] + ") and " + values[i*2+1] + " (" + votingMethodNames[i*2+1] + ")... " + votingMethodNames[secondRound[i]] + " wins!");
+            DebugMsg("Comparing " + values[i * 2] + " (" + votingMethodNames[i * 2] + ") and " + values[i * 2 + 1] + " (" + votingMethodNames[i * 2 + 1] + ")... " + votingMethodNames[secondRound[i]] + " wins!");
         }
 
         DebugMsg("Round two!");
@@ -173,7 +165,7 @@ public class presidentialElectionsScript : MonoBehaviour {
             double[] keys;
             string[] keysButStringsOops;
             int[] items = new int[4] { 0, 1, 2, 3 };
-            
+
             // Sort
             switch (sortingMethods[i])
             {
@@ -191,7 +183,7 @@ public class presidentialElectionsScript : MonoBehaviour {
                     break;
                 case 2: // reading order based on color table
                     keys = new double[4] { colors[0], colors[1], colors[2], colors[3] };
-                    for (int j = 0; j < 4; j++) { keys[j] -= j * .1;  }
+                    for (int j = 0; j < 4; j++) { keys[j] -= j * .1; }
                     Array.Sort(keys, items);
                     votes[i] = items;
                     break;
@@ -292,8 +284,8 @@ public class presidentialElectionsScript : MonoBehaviour {
                     break;
             }
 
-            DebugMsg("The candidates in vote #" + (i+1) + " is sorted " + sortingMethodNames[sortingMethods[i]] + ".");
-            DebugMsg("The order they voted is: " + (votes[i][0]+1) + + (votes[i][1] + 1) + (votes[i][2] + 1) + (votes[i][3] + 1) + ".");
+            DebugMsg("The candidates in vote #" + (i + 1) + " is sorted " + sortingMethodNames[sortingMethods[i]] + ".");
+            DebugMsg("The order they voted is: " + (votes[i][0] + 1) + +(votes[i][1] + 1) + (votes[i][2] + 1) + (votes[i][3] + 1) + ".");
         }
 
         // Calculate the placing
@@ -379,9 +371,9 @@ public class presidentialElectionsScript : MonoBehaviour {
                         if ((tempCandidateScores[j] >= tempCandidateScores[maximum] || eliminated[maximum]) && !eliminated[j])
                             maximum = j;
                     eliminated[maximum] = true;
-                    candidateScores[maximum] = 4-i;
+                    candidateScores[maximum] = 4 - i;
                 }
-                
+
                 break;
             case 7: // condorcet method
                 int[][] condorcetTable = {
@@ -400,7 +392,7 @@ public class presidentialElectionsScript : MonoBehaviour {
                     condorcetTable[vote[1]][vote[3]]++;
                     condorcetTable[vote[2]][vote[3]]++;
                 }
-                
+
                 for (int i = 0; i < 4; i++)
                 {
                     if (condorcetTable[i].Where(x => x > 3).Count() == 3)
@@ -408,7 +400,7 @@ public class presidentialElectionsScript : MonoBehaviour {
                     else
                         candidateScores[i] = condorcetTable[i].Sum();
                 }
-                
+
                 break;
         }
 
@@ -432,7 +424,7 @@ public class presidentialElectionsScript : MonoBehaviour {
             {
                 Debug.LogFormat("secrert debugg.g... {0} {1}", sortedCandidateScores[i], lastScore);
                 candidatePlacement[candidateOrder[i]] = candidatePlacement[candidateOrder[i - 1]];
-                DebugMsg("Button #" + (candidateOrder[i]+1) + " is also in " + ordinalNumbers[candidatePlacement[candidateOrder[i]]] + " place.");
+                DebugMsg("Button #" + (candidateOrder[i] + 1) + " is also in " + ordinalNumbers[candidatePlacement[candidateOrder[i]]] + " place.");
             }
             else
             {
@@ -545,7 +537,7 @@ public class presidentialElectionsScript : MonoBehaviour {
                 fadingIn = false;
             else if (whiteness <= 175)
                 fadingIn = true;
-            
+
             yield return new WaitForSeconds(.01f);
         }
     }
@@ -566,7 +558,7 @@ public class presidentialElectionsScript : MonoBehaviour {
     private IEnumerator ProcessTwitchCommand(string command)
     {
         command = command.Trim().ToLowerInvariant();
-        if(Regex.IsMatch(command, "^cycle$", RegexOptions.IgnoreCase))
+        if (Regex.IsMatch(command, "^cycle$", RegexOptions.IgnoreCase))
         {
             yield return null;
             if (!Application.isEditor)
@@ -599,7 +591,7 @@ public class presidentialElectionsScript : MonoBehaviour {
             int[] buttons = command.Split().Skip(1).Select(n => int.Parse(n) - 1).ToArray();
             if (!Application.isEditor)
             {
-                if(highlights == null || enumValue == null || highlightMethod == null) SetupHighlightables();
+                if (highlights == null || enumValue == null || highlightMethod == null) SetupHighlightables();
 
                 foreach (int button in buttons)
                 {
@@ -624,7 +616,7 @@ public class presidentialElectionsScript : MonoBehaviour {
         {
             yield return null;
             int[] buttons = command.Split().Skip(1).Select(n => int.Parse(n) - 1).ToArray();
-            foreach(int button in buttons)
+            foreach (int button in buttons)
             {
                 btnSelectables[button].OnInteract();
                 yield return new WaitForSecondsRealtime(.1f);
@@ -646,7 +638,7 @@ public class presidentialElectionsScript : MonoBehaviour {
     {
         List<int> nbs = Enumerable.Range(0, 4).Where(n => !pressedButtons[n]).ToList();
         nbs = nbs.OrderBy(n => candidatePlacement[n]).ToList();
-        foreach(int nb in nbs)
+        foreach (int nb in nbs)
         {
             btnSelectables[nb].OnInteract();
             yield return new WaitForSecondsRealtime(.1f);
