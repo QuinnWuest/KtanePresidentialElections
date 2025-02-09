@@ -14,7 +14,9 @@ MonoBehaviour:
   id: presidentialElections
   title: Presidential Elections
   author: EpicToast
-  description: "Module ID: presidentialElections\nManual: https://ktane.timwi.de/HTML/Presidential%20Elections.html\r\n\n(ok
+  description: "This is a reupload of EpicToast's module with changes and bug fixes.
+    Unsubscribe from the old version here:\r\nhttps://steamcommunity.com/sharedfiles/filedetails/?id=2613435051\n\nModule
+    ID: presidentialElections\nManual: https://ktane.timwi.de/HTML/Presidential%20Elections.html\r\n\n(ok
     no more vaguely political modules)\n\nTP Support by Konoko"
   version: v1.1
   outputFolder: build

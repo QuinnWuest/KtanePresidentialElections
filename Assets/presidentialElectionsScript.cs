@@ -106,13 +106,21 @@ public class presidentialElectionsScript : MonoBehaviour {
         // Generate the candidates
         for (int i = 0; i < 4; i++)
         {
-            while (colors.Where(x => x == colors[i]).Count() > 1 || colors[i] == 99)
-                colors[i] = Random.Range(0, colorNames.Length);
-            while (parties.Where(x => x == parties[i]).Count() > 1 || parties[i] == 99)
-                parties[i] = Random.Range(0, partyNames.Length);
-            while (candidates.Where(x => x == candidates[i]).Count() > 1 || candidates[i] == 99)
-                candidates[i] = Random.Range(0, candidateNames.Length);
-
+            var test = true;
+            if (!test)
+            {
+                while (colors.Where(x => x == colors[i]).Count() > 1 || colors[i] == 99)
+                    colors[i] = Random.Range(0, colorNames.Length);
+                while (parties.Where(x => x == parties[i]).Count() > 1 || parties[i] == 99)
+                    parties[i] = Random.Range(0, partyNames.Length);
+                while (candidates.Where(x => x == candidates[i]).Count() > 1 || candidates[i] == 99)
+                    candidates[i] = Random.Range(0, candidateNames.Length);
+            }
+            else {
+                colors = new[] { 5, 13, 7, 10 };
+                parties = new[] { 10, 6, 15, 12 };
+                candidates = new[] { 7, 3, 50, 35 };
+            }
             btnRenderers[i].material = colorMats[colors[i]];
             if (colors[i] >= 7 && colors[i] <= 12)
                 spriteRenderers[i].color = Color.white;
@@ -279,9 +287,10 @@ public class presidentialElectionsScript : MonoBehaviour {
                     votes[i] = new int[4] { 0, 1, 3, 2 };
                     break;
                 case 17: // same way the last character voted
-                    if (i == 0) { votes[i] = new int[4] { 0, 1, 2, 3 }; sortingMethods[i]++; }
+                    if (i == 0)
+                        votes[i] = new int[4] { 0, 1, 2, 3 };
                     else
-                        votes[i] = votes[i - 1];
+                        votes[i] = votes[i - 1].ToArray();
                     break;
             }
 
@@ -558,7 +567,7 @@ public class presidentialElectionsScript : MonoBehaviour {
 
     private IEnumerator ProcessTwitchCommand(string command)
     {
-        command = command.Trim();
+        command = command.Trim().ToLowerInvariant();
         if(Regex.IsMatch(command, "^cycle$", RegexOptions.IgnoreCase))
         {
             yield return null;
