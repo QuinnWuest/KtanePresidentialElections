@@ -496,6 +496,7 @@ GameObject:
   - component: {fileID: 114820096395399240}
   - component: {fileID: 114909044889590058}
   - component: {fileID: 114614265948904880}
+  - component: {fileID: 114438380697268342}
   m_Layer: 0
   m_Name: PresidentialElections
   m_TagString: Untagged
@@ -1958,6 +1959,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - KT/Mobile/DiffuseTint
+--- !u!114 &114438380697268342
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1834801995558804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adf69c2de51bd3c43bbd9bc22578ee08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _seed: 1
 --- !u!114 &114449237478941534
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2057,6 +2070,7 @@ MonoBehaviour:
   Module: {fileID: 114775561405901828}
   Info: {fileID: 114909044889590058}
   Audio: {fileID: 114820096395399240}
+  ruleSeed: {fileID: 114438380697268342}
   btnRenderers:
   - {fileID: 23409233503382092}
   - {fileID: 23262421661068180}

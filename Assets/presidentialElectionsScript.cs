@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Reflection;
+using Assets;
 
 public class presidentialElectionsScript : MonoBehaviour {
 
@@ -14,6 +15,7 @@ public class presidentialElectionsScript : MonoBehaviour {
     public KMBombModule Module;
     public KMBombInfo Info;
     public KMAudio Audio;
+    public KMRuleSeedable ruleSeed;
 
     public MeshRenderer[] btnRenderers, ledRenderers;
     public Material[] colorMats;
@@ -39,18 +41,14 @@ public class presidentialElectionsScript : MonoBehaviour {
     static readonly string[] colorNames = { "red", "green", "blue", "yellow", "magenta", "cyan", "orange", "purple", "brown", "crimson", "forest", "navy", "black", "gray", "white" };
     static readonly string[] partyNames = { "Slowpoke", "Mischief", "Conspiracy", "Trivia Murder", "Rent Is Too Damn Low", "Experimental", "Quack Quack", "Birthday", "Carcinization", "Vine Boom", "Android", "Toxicity", "Little Guy", "Vote For This", "Aaaaaaaah", "Catpeople" };
     static readonly string[] candidateNames = {
-        "YOUR MOM", "DICK KICKEM", "GRUNKLE SQUEAKY", "YABBAGUY", "DEAF", "EPICTOAST", "BAGELS", "IVAN IVANSKY IVANOVICH", "SHELDON COOPER", "MR BILL CLINTON SEX SCANDAL", "VERMIN SUPREME", "DEEZ NUTS", 
+        "YOUR MOM", "DICK KICKEM", "GRUNKLE SQUEAKY", "YABBAGUY", "DEAF", "EPICTOAST", "IVAN IVANSKY IVANOVICH", "SHELDON COOPER", "MR BILL CLINTON SEX SCANDAL", "VERMIN SUPREME", "DEEZ NUTS", 
         "YOUR DAD", "OMEGA", "COLORS", "VOID", "LUNA", "COOLDOOM", "MCD", "CRAZYCALEB", "LIL UZI VERT", "BOB", "SIMON", "TWITCH PLAYS HIVEMIND", "TASHA", "JEB", "LOGBOT", "KANYE WEST", "JEAVER",
         "KONNOR", "MR PEANUT", "BLAN", "JENSON", "VANILLA", "CHOCOLA", "MARGARET THATCHER", "KONOKO", "THE DEMOGORGON", "BABE RUTH", "KEVIN LEE", "THE E PAWN", "MARCUS STUYVESANT", "KOOPA TROOPA",
         "HONG JIN-HO", "KAZEYOSHI IMAI", "DON CHEADLE", "MILLIE ROSE", "WARIO", "DEPRESSO", "GORDON FREEMAN", "NEIL CICIEREGA", "THE SHELLED ONE", "ANYONE BUT DEAF", "DART MONKEY", "SANTA CLAUS", "CTHULHU"
     };
-    static readonly string[] spacelessPartyNames = { "SLOWPOKE", "MISCHIEF", "CONSPIRACY", "TRIVIAMURDER", "RENTISTOODAMNLOW", "EXPERIMENTAL", "QUACKQUACK", "BIRTHDAY", "CARCINIZATION", "VINEBOOM", "ANDROID", "TOXICITY", "LITTLEGUY", "VOTEFORTHIS", "AAAAAAAAH", "CATPEOPLE" };
-    static readonly string[] spacelessCandidateNames = { // i am choosing violence because c# is not letting me replace a space with the empty string
-       "YOURMOM","DICKKICKEM","GRUNKLESQUEAKY","YABBAGUY","DEAF","EPICTOAST","BAGELS","IVANIVANSKYIVANOVICH","SHELDONCOOPER","MRBILLCLINTONSEXSCANDAL","VERMINSUPREME","DEEZNUTS",
-        "YOURDAD","OMEGA","COLORS","VOID","LUNA","COOLDOOM","MCD","CRAZYCALEB","LILUZIVERT","BOB","SIMON","TWITCHPLAYSHIVEMIND","TASHA","JEB","LOGBOT","KANYEWEST","JEAVER",
-        "KONNOR","MRPEANUT","BLAN","JENSON","VANILLA","CHOCOLA","MARGARETTHATCHER","KONOKO","THEDEMOGORGON","BABERUTH","KEVINLEE","THEEPAWN","MARCUSSTUYVESANT","KOOPATROOPA",
-        "HONGJINHO","KAZEYOSHIIMAI","DONCHEADLE","MILLIEROSE","WARIO","DEPRESSO","GORDONFREEMAN","NEILCICIEREGA","THESHELLEDONE","ANYONEBUTDEAF", "DARTMONKEY", "SANTACLAUS", "CTHULHU"
-    };
+    static readonly string[] spacelessPartyNames = partyNames.Raw();
+    static readonly string[] spacelessCandidateNames = candidateNames.Raw();
+
     static readonly int[] colorNumbers = { 12, 5, 13, 3, 7, 4, 8, 10, 14, 15, 2, 6, 1, 9, 11 };
     static readonly int[] partyNumbers = { 7, 15, 4, 2, 9, 8, 12, 13, 6, 11, 3, 16, 1, 5, 14, 10 };
 
@@ -74,9 +72,9 @@ public class presidentialElectionsScript : MonoBehaviour {
         new int[4] { 0, 0, 0, 0 },
         new int[4] { 0, 0, 0, 0 },
     };
-    int[] candidateScores = { 0, 0, 0, 0 };
-    bool[] pressedButtons = { false, false, false, false };
-    int[] candidatePlacement = { 0, 0, 0, 0 };
+    readonly int[] candidateScores = { 0, 0, 0, 0 };
+    readonly bool[] pressedButtons = { false, false, false, false };
+    readonly int[] candidatePlacement = { 0, 0, 0, 0 };
     int nextPlace = 0;
 
     // Other variables
