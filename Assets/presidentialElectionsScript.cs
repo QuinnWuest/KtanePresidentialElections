@@ -102,17 +102,15 @@ public class presidentialElectionsScript : MonoBehaviour
         votedSticker.SetActive(false);
         StartCoroutine(TextFade());
 
+        colors = Enumerable.Range(0, colorNames.Length).ToArray().Shuffle().Take(4).ToArray();
+        parties = Enumerable.Range(0, partyNames.Length).ToArray().Shuffle().Take(4).ToArray();
+        candidates = Enumerable.Range(0, candidateNames.Length).ToArray().Shuffle().Take(4).ToArray();
+
         // Generate the candidates
         for (int i = 0; i < 4; i++)
         {
-            while (colors.Where(x => x == colors[i]).Count() > 1 || colors[i] == 99)
-                colors[i] = Random.Range(0, colorNames.Length);
-            while (parties.Where(x => x == parties[i]).Count() > 1 || parties[i] == 99)
-                parties[i] = Random.Range(0, partyNames.Length);
-            while (candidates.Where(x => x == candidates[i]).Count() > 1 || candidates[i] == 99)
-                candidates[i] = Random.Range(0, candidateNames.Length);
             btnRenderers[i].material = colorMats[colors[i]];
-            if (colors[i] >= 7 && colors[i] <= 12)
+            if (colors[i] >= 7 && colors[i] <= 12) //TODO: Change this, will probably break with ruleseed
                 spriteRenderers[i].color = Color.white;
             else
                 spriteRenderers[i].color = Color.black;
