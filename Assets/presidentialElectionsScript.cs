@@ -64,11 +64,11 @@ public class presidentialElectionsScript : MonoBehaviour
     VotingMethod[] votingMethodNames;
 
     int[] sortingMethods = { 99, 99, 99, 99, 99, 99 };
-    static readonly string[] sortingMethodNames = { "in alphabetical order by their color names", "by the length of their color names", "in reading order based on the color name table",
+    SortingMethod[] sortingMethodNames;/* = { "in alphabetical order by their color names", "by the length of their color names", "in reading order based on the color name table",
     "clockwise, starting from the top-right", "by the Scrabble score of the last three letters of their names", "clockwise, starting from the bottom-left", "by the number next to their party names",
     "in reading order based on the party name table", "in alphabetical order by their names", "by the number next to their color names", "by the length of their party names",
     "clockwise, starting from the bottom-right", "in alphabetical order by their party names", "by the Scrabble score of the first three letters of their names",
-    "by the Scrabble score of the first and last letters of their names", "by the length of their names", "clockwise, starting from the top-left", "the same way the last character voted", "in reading order" };
+    "by the Scrabble score of the first and last letters of their names", "by the length of their names", "clockwise, starting from the top-left", "the same way the last character voted", "in reading order" };*/
 
     int[][] votes =
     {
@@ -113,6 +113,7 @@ public class presidentialElectionsScript : MonoBehaviour
             colorNumbers = baseColorNumbers;
             partyNumbers = basePartyNumbers;
             votingMethodNames = Enum.GetValues(typeof(VotingMethod)).Cast<VotingMethod>().ToArray();
+            sortingMethodNames = Enum.GetValues(typeof(SortingMethod)).Cast<SortingMethod>().ToArray();
         }
         else
         {
@@ -121,11 +122,13 @@ public class presidentialElectionsScript : MonoBehaviour
             colorNumbers = rng.ShuffleFisherYates(baseColorNumbers);
             partyNumbers = rng.ShuffleFisherYates(basePartyNumbers);
             votingMethodNames = rng.ShuffleFisherYates(Enum.GetValues(typeof(VotingMethod)).Cast<VotingMethod>().ToArray());
+            sortingMethodNames = rng.ShuffleFisherYates(Enum.GetValues(typeof(SortingMethod)).Cast<SortingMethod>().ToArray());
             DebugMessage(string.Join(",", colorNames));
             DebugMessage(string.Join(",", partyNames));
             DebugMessage(string.Join(",", colorNumbers.Select(i => i.ToString()).ToArray()));
             DebugMessage(string.Join(",", partyNumbers.Select(i => i.ToString()).ToArray()));
             DebugMessage(string.Join(",", votingMethodNames.Select(i => i.ToLogString()).ToArray()));
+            DebugMessage(string.Join(";", sortingMethodNames.Select(i => i.ToLogString()).ToArray()));
         }
     }
 
@@ -199,30 +202,30 @@ public class presidentialElectionsScript : MonoBehaviour
             int[] items = new int[4] { 0, 1, 2, 3 };
 
             // Sort
-            switch (sortingMethods[i])
+            switch (sortingMethodNames[sortingMethods[i]])
             {
-                case 0: // alphabetical by color names
+                case SortingMethod.ColorAlphabetical:
                     keysButStringsOops = new string[4] { colorNames[colors[0]], colorNames[colors[1]], colorNames[colors[2]], colorNames[colors[3]] };
                     Array.Sort(keysButStringsOops, items);
                     votes[i] = items;
                     break;
-                case 1: // length of color names
+                case SortingMethod.ColorLength:
                     keys = new double[4] { colorNames[colors[0]].Length, colorNames[colors[1]].Length, colorNames[colors[2]].Length, colorNames[colors[3]].Length };
                     for (int j = 0; j < 4; j++) { keys[j] -= j * .1; }
                     Array.Sort(keys, items);
                     Array.Reverse(items);
                     votes[i] = items;
                     break;
-                case 2: // reading order based on color table
+                case SortingMethod.ColorReadingOrder:
                     keys = new double[4] { colors[0], colors[1], colors[2], colors[3] };
                     for (int j = 0; j < 4; j++) { keys[j] -= j * .1; }
                     Array.Sort(keys, items);
                     votes[i] = items;
                     break;
-                case 3: // clockwise from top-right
+                case SortingMethod.ClockwiseTopRight:
                     votes[i] = new int[4] { 1, 3, 2, 0 };
                     break;
-                case 4: // Scrabble score of last three letters (FEAR ME)
+                case SortingMethod.ScrabbleLastThree:
                     keys = new double[4] {
                         scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[0]][spacelessCandidateNames[candidates[0]].Length - 1])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[0]][spacelessCandidateNames[candidates[0]].Length - 2])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[0]][spacelessCandidateNames[candidates[0]].Length - 3])],
                         scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][spacelessCandidateNames[candidates[1]].Length - 1])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][spacelessCandidateNames[candidates[1]].Length - 2])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][spacelessCandidateNames[candidates[1]].Length - 3])],
@@ -233,50 +236,50 @@ public class presidentialElectionsScript : MonoBehaviour
                     Array.Reverse(items);
                     votes[i] = items;
                     break;
-                case 5: // clockwise from bottom-left
+                case SortingMethod.ClockwiseBottomLeft:
                     votes[i] = new int[4] { 2, 0, 1, 3 };
                     break;
-                case 6: // number next to party names
+                case SortingMethod.PartyNumber:
                     keys = new double[4] { partyNumbers[parties[0]], partyNumbers[parties[1]], partyNumbers[parties[2]], partyNumbers[parties[3]] };
                     for (int j = 0; j < 4; j++) { keys[j] -= j * .1; }
                     Array.Sort(keys, items);
                     Array.Reverse(items);
                     votes[i] = items;
                     break;
-                case 7: // reading order based on party table
+                case SortingMethod.PartyReadingOrder:
                     keys = new double[4] { parties[0], parties[1], parties[2], parties[3] };
                     for (int j = 0; j < 4; j++) { keys[j] -= j * .1; }
                     Array.Sort(keys, items);
                     votes[i] = items;
                     break;
-                case 8: // alphabetical by names
+                case SortingMethod.NameAlphabetical:
                     keysButStringsOops = new string[4] { candidateNames[candidates[0]], candidateNames[candidates[1]], candidateNames[candidates[2]], candidateNames[candidates[3]] };
                     Array.Sort(keysButStringsOops, items);
                     votes[i] = items;
                     break;
-                case 9: // number next to color names
+                case SortingMethod.ColorNumber:
                     keys = new double[4] { colorNumbers[colors[0]], colorNumbers[colors[1]], colorNumbers[colors[2]], colorNumbers[colors[3]] };
                     for (int j = 0; j < 4; j++) { keys[j] -= j * .1; }
                     Array.Sort(keys, items);
                     Array.Reverse(items);
                     votes[i] = items;
                     break;
-                case 10: // length of party names
+                case SortingMethod.PartyLength:
                     keys = new double[4] { spacelessPartyNames[parties[0]].Length, spacelessPartyNames[parties[1]].Length, spacelessPartyNames[parties[2]].Length, spacelessPartyNames[parties[3]].Length };
                     for (int j = 0; j < 4; j++) { keys[j] -= j * .1; }
                     Array.Sort(keys, items);
                     Array.Reverse(items);
                     votes[i] = items;
                     break;
-                case 11: // clockwise from bottom-right
+                case SortingMethod.ClockwiseBottomRight:
                     votes[i] = new int[4] { 3, 2, 0, 1 };
                     break;
-                case 12: // alphabetical by party names
+                case SortingMethod.PartyAlphabetical:
                     keysButStringsOops = new string[4] { spacelessPartyNames[parties[0]], spacelessPartyNames[parties[1]], spacelessPartyNames[parties[2]], spacelessPartyNames[parties[3]] };
                     Array.Sort(keysButStringsOops, items);
                     votes[i] = items;
                     break;
-                case 13: // Scrabble score of first three letters
+                case SortingMethod.ScrabbleFirstThree:
                     keys = new double[4] {
                         scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[0]][0])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[0]][1])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[0]][2])],
                         scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][0])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][1])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][2])],
@@ -287,7 +290,7 @@ public class presidentialElectionsScript : MonoBehaviour
                     Array.Reverse(items);
                     votes[i] = items;
                     break;
-                case 14: // Scrabble score of first and last letters
+                case SortingMethod.ScrabbleFirstAndLast:
                     keys = new double[4] {
                         scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[0]][0])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[0]].Last())],
                         scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][0])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]].Last())],
@@ -298,17 +301,17 @@ public class presidentialElectionsScript : MonoBehaviour
                     Array.Reverse(items);
                     votes[i] = items;
                     break;
-                case 15: // length of names
+                case SortingMethod.NameLength:
                     keys = new double[4] { spacelessCandidateNames[candidates[0]].Length, spacelessCandidateNames[candidates[1]].Length, spacelessCandidateNames[candidates[2]].Length, spacelessCandidateNames[candidates[3]].Length };
                     for (int j = 0; j < 4; j++) { keys[j] -= j * .1; }
                     Array.Sort(keys, items);
                     Array.Reverse(items);
                     votes[i] = items;
                     break;
-                case 16: // clockwise from top left
+                case SortingMethod.ClockwiseTopLeft:
                     votes[i] = new int[4] { 0, 1, 3, 2 };
                     break;
-                case 17: // same way the last character voted
+                case SortingMethod.CopyLastCharacter: // same way the last character voted
                     if (i == 0)
                         votes[i] = new int[4] { 0, 1, 2, 3 };
                     else
@@ -316,7 +319,7 @@ public class presidentialElectionsScript : MonoBehaviour
                     break;
             }
 
-            LogMessage("The candidates in vote #" + (i + 1) + " is sorted " + sortingMethodNames[sortingMethods[i]] + ".");
+            LogMessage("The candidates in vote #" + (i + 1) + " is sorted " + sortingMethodNames[sortingMethods[i]].ToLogString() + ".");
             LogMessage("The order they voted is: " + (votes[i][0] + 1) + +(votes[i][1] + 1) + (votes[i][2] + 1) + (votes[i][3] + 1) + ".");
         }
 
