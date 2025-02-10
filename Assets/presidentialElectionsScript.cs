@@ -1,13 +1,12 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using Assets;
 using KModkit;
 using System;
-using Random = UnityEngine.Random;
-using System.Linq;
-using System.Text.RegularExpressions;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using Assets;
+using System.Text.RegularExpressions;
+using UnityEngine;
 
 public class presidentialElectionsScript : MonoBehaviour
 {
@@ -43,7 +42,7 @@ public class presidentialElectionsScript : MonoBehaviour
         "KONNOR", "MR PEANUT", "BLAN", "JENSON", "VANILLA", "CHOCOLA", "MARGARET THATCHER", "KONOKO", "THE DEMOGORGON", "BABE RUTH", "KEVIN LEE", "THE E PAWN", "MARCUS STUYVESANT", "KOOPA TROOPA",
         "HONG JIN-HO", "KAZEYOSHI IMAI", "DON CHEADLE", "MILLIE ROSE", "WARIO", "DEPRESSO", "GORDON FREEMAN", "NEIL CICIEREGA", "THE SHELLED ONE", "ANYONE BUT DEAF", "DART MONKEY", "SANTA CLAUS", "CTHULHU"
     };
-    static readonly string[] spacelessPartyNames = basePartyNames;//partyNames.Raw(); TODO:Change
+    static readonly string[] spacelessPartyNames = basePartyNames.Raw();//TODO:Change
     static readonly string[] spacelessCandidateNames = candidateNames.Raw();
 
     static readonly int[] baseColorNumbers = { 12, 5, 13, 3, 7, 4, 8, 10, 14, 15, 2, 6, 1, 9, 11 };
@@ -62,7 +61,7 @@ public class presidentialElectionsScript : MonoBehaviour
 
     // Voting variables
     int votingMethod = 0;
-    static readonly string[] votingMethodNames = { "first-past-the-post", "last-past-the-post", "instant runoff", "Coomb's method", "Borda count", "approval voting", "STV", "Condorcet method" };
+    VotingMethod[] votingMethodNames;
 
     int[] sortingMethods = { 99, 99, 99, 99, 99, 99 };
     static readonly string[] sortingMethodNames = { "in alphabetical order by their color names", "by the length of their color names", "in reading order based on the color name table",
@@ -113,6 +112,7 @@ public class presidentialElectionsScript : MonoBehaviour
             partyNames = basePartyNames;
             colorNumbers = baseColorNumbers;
             partyNumbers = basePartyNumbers;
+            votingMethodNames = Enum.GetValues(typeof(VotingMethod)).Cast<VotingMethod>().ToArray();
         }
         else
         {
@@ -120,10 +120,12 @@ public class presidentialElectionsScript : MonoBehaviour
             partyNames = rng.ShuffleFisherYates(basePartyNames);
             colorNumbers = rng.ShuffleFisherYates(baseColorNumbers);
             partyNumbers = rng.ShuffleFisherYates(basePartyNumbers);
+            votingMethodNames = rng.ShuffleFisherYates(Enum.GetValues(typeof(VotingMethod)).Cast<VotingMethod>().ToArray());
             DebugMessage(string.Join(",", colorNames));
             DebugMessage(string.Join(",", partyNames));
             DebugMessage(string.Join(",", colorNumbers.Select(i => i.ToString()).ToArray()));
             DebugMessage(string.Join(",", partyNumbers.Select(i => i.ToString()).ToArray()));
+            DebugMessage(string.Join(",", votingMethodNames.Select(i => i.ToLogString()).ToArray()));
         }
     }
 
@@ -162,7 +164,7 @@ public class presidentialElectionsScript : MonoBehaviour
         {
             if (values[i * 2] >= values[i * 2 + 1]) { secondRound[i] = i * 2; }
             else { secondRound[i] = i * 2 + 1; }
-            LogMessage("Comparing " + values[i * 2] + " (" + votingMethodNames[i * 2] + ") and " + values[i * 2 + 1] + " (" + votingMethodNames[i * 2 + 1] + ")... " + votingMethodNames[secondRound[i]] + " wins!");
+            LogMessage("Comparing " + values[i * 2] + " (" + votingMethodNames[i * 2].ToLogString() + ") and " + values[i * 2 + 1] + " (" + votingMethodNames[i * 2 + 1].ToLogString() + ")... " + votingMethodNames[secondRound[i]].ToLogString() + " wins!");
         }
 
         LogMessage("Round two!");
@@ -170,7 +172,7 @@ public class presidentialElectionsScript : MonoBehaviour
         {
             if (values[secondRound[i * 2]] <= values[secondRound[i * 2 + 1]]) { thirdRound[i] = secondRound[i * 2]; }
             else { thirdRound[i] = secondRound[i * 2 + 1]; }
-            LogMessage("Comparing " + values[secondRound[i * 2]] + " (" + votingMethodNames[secondRound[i * 2]] + ") and " + values[secondRound[i * 2 + 1]] + " (" + votingMethodNames[secondRound[i * 2 + 1]] + ")... " + votingMethodNames[thirdRound[i]] + " wins!");
+            LogMessage("Comparing " + values[secondRound[i * 2]] + " (" + votingMethodNames[secondRound[i * 2]].ToLogString() + ") and " + values[secondRound[i * 2 + 1]] + " (" + votingMethodNames[secondRound[i * 2 + 1]].ToLogString() + ")... " + votingMethodNames[thirdRound[i]].ToLogString() + " wins!");
         }
 
         LogMessage("Round three!");
@@ -178,8 +180,8 @@ public class presidentialElectionsScript : MonoBehaviour
             votingMethod = thirdRound[0];
         else
             votingMethod = thirdRound[1];
-        LogMessage("Comparing " + values[thirdRound[0]] + " (" + votingMethodNames[thirdRound[0]] + ") and " + values[thirdRound[1]] + " (" + votingMethodNames[thirdRound[1]] + ")... " + votingMethodNames[votingMethod] + " wins!");
-        LogMessage("This election uses " + votingMethodNames[votingMethod] + ".");
+        LogMessage("Comparing " + values[thirdRound[0]] + " (" + votingMethodNames[thirdRound[0]].ToLogString() + ") and " + values[thirdRound[1]] + " (" + votingMethodNames[thirdRound[1]].ToLogString() + ")... " + votingMethodNames[votingMethod].ToLogString() + " wins!");
+        LogMessage("This election uses " + votingMethodNames[votingMethod].ToLogString() + ".");
 
         // Find the votes
         char[] rows = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
@@ -324,17 +326,17 @@ public class presidentialElectionsScript : MonoBehaviour
         int[] votePositions = { 0, 0, 0, 0, 0, 0 };
         bool[] eliminated = { false, false, false, false };
 
-        switch (votingMethod)
+        switch (votingMethodNames[votingMethod])
         {
-            case 0: // first-past-the-post
+            case VotingMethod.FirstPastThePost:
                 foreach (var vote in votes)
                     candidateScores[vote[0]]++;
                 break;
-            case 1: // last-past-the-post
+            case VotingMethod.LastPastThePost:
                 foreach (var vote in votes)
                     candidateScores[vote[3]]--;
                 break;
-            case 2: // instant runoff
+            case VotingMethod.InstantRunoff:
                 for (int i = 0; i < 4; i++)
                 {
                     int[] tempCandidateScores = { 0, 0, 0, 0 };
@@ -354,7 +356,7 @@ public class presidentialElectionsScript : MonoBehaviour
                 }
 
                 break;
-            case 3: // coom's method
+            case VotingMethod.CoombMethod:
                 votePositions = new int[6] { 3, 3, 3, 3, 3, 3 };
                 for (int i = 0; i < 4; i++)
                 {
@@ -375,17 +377,17 @@ public class presidentialElectionsScript : MonoBehaviour
                 }
 
                 break;
-            case 4: // borda count
+            case VotingMethod.BordaCount:
                 foreach (var vote in votes)
                     for (int i = 0; i < 4; i++)
                         candidateScores[vote[i]] += 4 - i;
                 break;
-            case 5: // approval voting
+            case VotingMethod.ApprovalVoting:
                 for (int i = 0; i < 6; i++)
                     for (int j = 0; j < (i % 3) + 1; j++)
                         candidateScores[votes[i][j]]++;
                 break;
-            case 6: // single transferrable vote
+            case VotingMethod.STV:
                 for (int i = 0; i < 4; i++)
                 {
                     int[] tempCandidateScores = { 0, 0, 0, 0 };
@@ -405,7 +407,7 @@ public class presidentialElectionsScript : MonoBehaviour
                 }
 
                 break;
-            case 7: // condorcet method
+            case VotingMethod.CondorcetMethod:
                 int[][] condorcetTable = {
                     new int[4] { 0,0,0,0 },
                     new int[4] { 0,0,0,0 },
@@ -445,20 +447,20 @@ public class presidentialElectionsScript : MonoBehaviour
 
         int lastScore = sortedCandidateScores[0];
 
-        Debug.LogFormat("secrert debugg.g... (internal scores) {0} {1} {2} {3}", candidateScores[0], candidateScores[1], candidateScores[2], candidateScores[3]);
+        DebugMessage(string.Format("secrert debugg.g... (internal scores) {0} {1} {2} {3}", candidateScores[0], candidateScores[1], candidateScores[2], candidateScores[3]));
         LogMessage("Button #" + (candidateOrder[0] + 1) + " is in " + ordinalNumbers[candidatePlacement[candidateOrder[0]]] + " place.");
 
         for (int i = 1; i < 4; i++)
         {
             if (sortedCandidateScores[i] == lastScore)
             {
-                Debug.LogFormat("secrert debugg.g... {0} {1}", sortedCandidateScores[i], lastScore);
+                DebugMessage(string.Format("secrert debugg.g... {0} {1}", sortedCandidateScores[i], lastScore));
                 candidatePlacement[candidateOrder[i]] = candidatePlacement[candidateOrder[i - 1]];
                 LogMessage("Button #" + (candidateOrder[i] + 1) + " is also in " + ordinalNumbers[candidatePlacement[candidateOrder[i]]] + " place.");
             }
             else
             {
-                Debug.LogFormat("secrert debugg.g... {0} {1}", sortedCandidateScores[i], lastScore);
+                DebugMessage(string.Format("secrert debugg.g... {0} {1}", sortedCandidateScores[i], lastScore));
                 candidatePlacement[candidateOrder[i]] = candidatePlacement[candidateOrder[i - 1]] + 1;
                 lastScore = sortedCandidateScores[i];
                 LogMessage("Button #" + (candidateOrder[i] + 1) + " is in " + ordinalNumbers[candidatePlacement[candidateOrder[i]]] + " place.");
