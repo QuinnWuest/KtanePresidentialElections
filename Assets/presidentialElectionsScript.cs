@@ -34,24 +34,31 @@ public class presidentialElectionsScript : MonoBehaviour
     bool solved = false;
     bool animationPlaying = false;
 
-    // Candidate variables
-    int[] colors = { 99, 99, 99, 99 };
-    int[] parties = { 99, 99, 99, 99 };
-    int[] candidates = { 99, 99, 99, 99 };
-
-    static readonly string[] colorNames = { "red", "green", "blue", "yellow", "magenta", "cyan", "orange", "purple", "brown", "crimson", "forest", "navy", "black", "gray", "white" };
-    static readonly string[] partyNames = { "Slowpoke", "Mischief", "Conspiracy", "Trivia Murder", "Rent Is Too Damn Low", "Experimental", "Quack Quack", "Birthday", "Carcinization", "Vine Boom", "Android", "Toxicity", "Little Guy", "Vote For This", "Aaaaaaaah", "Catpeople" };
+    // Full array variables
+    static readonly string[] baseColorNames = { "red", "green", "blue", "yellow", "magenta", "cyan", "orange", "purple", "brown", "crimson", "forest", "navy", "black", "gray", "white" };
+    static readonly string[] basePartyNames = { "Slowpoke", "Mischief", "Conspiracy", "Trivia Murder", "Rent Is Too Damn Low", "Experimental", "Quack Quack", "Birthday", "Carcinization", "Vine Boom", "Android", "Toxicity", "Little Guy", "Vote For This", "Aaaaaaaah", "Catpeople" };
     static readonly string[] candidateNames = {
-        "YOUR MOM", "DICK KICKEM", "GRUNKLE SQUEAKY", "YABBAGUY", "DEAF", "EPICTOAST", "IVAN IVANSKY IVANOVICH", "SHELDON COOPER", "MR BILL CLINTON SEX SCANDAL", "VERMIN SUPREME", "DEEZ NUTS", 
+        "YOUR MOM", "DICK KICKEM", "GRUNKLE SQUEAKY", "YABBAGUY", "DEAF", "EPICTOAST", "IVAN IVANSKY IVANOVICH", "SHELDON COOPER", "MR BILL CLINTON SEX SCANDAL", "VERMIN SUPREME", "DEEZ NUTS",
         "YOUR DAD", "OMEGA", "COLORS", "VOID", "LUNA", "COOLDOOM", "MCD", "CRAZYCALEB", "LIL UZI VERT", "BOB", "SIMON", "TWITCH PLAYS HIVEMIND", "TASHA", "JEB", "LOGBOT", "KANYE WEST", "JEAVER",
         "KONNOR", "MR PEANUT", "BLAN", "JENSON", "VANILLA", "CHOCOLA", "MARGARET THATCHER", "KONOKO", "THE DEMOGORGON", "BABE RUTH", "KEVIN LEE", "THE E PAWN", "MARCUS STUYVESANT", "KOOPA TROOPA",
         "HONG JIN-HO", "KAZEYOSHI IMAI", "DON CHEADLE", "MILLIE ROSE", "WARIO", "DEPRESSO", "GORDON FREEMAN", "NEIL CICIEREGA", "THE SHELLED ONE", "ANYONE BUT DEAF", "DART MONKEY", "SANTA CLAUS", "CTHULHU"
     };
-    static readonly string[] spacelessPartyNames = partyNames.Raw();
+    static readonly string[] spacelessPartyNames = basePartyNames;//partyNames.Raw(); TODO:Change
     static readonly string[] spacelessCandidateNames = candidateNames.Raw();
 
-    static readonly int[] colorNumbers = { 12, 5, 13, 3, 7, 4, 8, 10, 14, 15, 2, 6, 1, 9, 11 };
-    static readonly int[] partyNumbers = { 7, 15, 4, 2, 9, 8, 12, 13, 6, 11, 3, 16, 1, 5, 14, 10 };
+    static readonly int[] baseColorNumbers = { 12, 5, 13, 3, 7, 4, 8, 10, 14, 15, 2, 6, 1, 9, 11 };
+    static readonly int[] basePartyNumbers = { 7, 15, 4, 2, 9, 8, 12, 13, 6, 11, 3, 16, 1, 5, 14, 10 };
+
+    //Array variables that will be used for this module
+    string[] colorNames;
+    string[] partyNames;
+    int[] colorNumbers;
+    int[] partyNumbers;
+
+    // Candidate variables
+    int[] colors;
+    int[] parties;
+    int[] candidates;
 
     // Voting variables
     int votingMethod = 0;
@@ -97,10 +104,35 @@ public class presidentialElectionsScript : MonoBehaviour
         }
     }
 
+    private void SetupRuleseed()
+    {
+        MonoRandom rng = ruleSeed.GetRNG();
+        if (rng.Seed == 1)
+        {
+            colorNames = baseColorNames;
+            partyNames = basePartyNames;
+            colorNumbers = baseColorNumbers;
+            partyNumbers = basePartyNumbers;
+        }
+        else
+        {
+            colorNames = rng.ShuffleFisherYates(baseColorNames);
+            partyNames = rng.ShuffleFisherYates(basePartyNames);
+            colorNumbers = rng.ShuffleFisherYates(baseColorNumbers);
+            partyNumbers = rng.ShuffleFisherYates(basePartyNumbers);
+            DebugMessage(string.Join(",", colorNames));
+            DebugMessage(string.Join(",", partyNames));
+            DebugMessage(string.Join(",", colorNumbers.Select(i => i.ToString()).ToArray()));
+            DebugMessage(string.Join(",", partyNumbers.Select(i => i.ToString()).ToArray()));
+        }
+    }
+
     private void Start()
     {
         votedSticker.SetActive(false);
         StartCoroutine(TextFade());
+
+        SetupRuleseed();
 
         colors = Enumerable.Range(0, colorNames.Length).ToArray().Shuffle().Take(4).ToArray();
         parties = Enumerable.Range(0, partyNames.Length).ToArray().Shuffle().Take(4).ToArray();
@@ -115,7 +147,7 @@ public class presidentialElectionsScript : MonoBehaviour
             else
                 spriteRenderers[i].color = Color.black;
             spriteRenderers[i].sprite = sprites[parties[i]];
-            DebugMsg("Button #" + (i + 1) + " is " + colorNames[colors[i]] + ", has the " + partyNames[parties[i]] + " symbol, and represents the candidate " + candidateNames[candidates[i]] + ".");
+            LogMessage("Button #" + (i + 1) + " is " + colorNames[colors[i]] + ", has the " + partyNames[parties[i]] + " symbol, and represents the candidate " + candidateNames[candidates[i]] + ".");
         }
 
         // Find the correct voting method
@@ -123,31 +155,31 @@ public class presidentialElectionsScript : MonoBehaviour
         int[] secondRound = new int[4];
         int[] thirdRound = new int[2];
 
-        DebugMsg("Simulating tournament...");
-        DebugMsg("Round one!");
+        LogMessage("Simulating tournament...");
+        LogMessage("Round one!");
 
         for (int i = 0; i < 4; i++)
         {
             if (values[i * 2] >= values[i * 2 + 1]) { secondRound[i] = i * 2; }
             else { secondRound[i] = i * 2 + 1; }
-            DebugMsg("Comparing " + values[i * 2] + " (" + votingMethodNames[i * 2] + ") and " + values[i * 2 + 1] + " (" + votingMethodNames[i * 2 + 1] + ")... " + votingMethodNames[secondRound[i]] + " wins!");
+            LogMessage("Comparing " + values[i * 2] + " (" + votingMethodNames[i * 2] + ") and " + values[i * 2 + 1] + " (" + votingMethodNames[i * 2 + 1] + ")... " + votingMethodNames[secondRound[i]] + " wins!");
         }
 
-        DebugMsg("Round two!");
+        LogMessage("Round two!");
         for (int i = 0; i < 2; i++)
         {
             if (values[secondRound[i * 2]] <= values[secondRound[i * 2 + 1]]) { thirdRound[i] = secondRound[i * 2]; }
             else { thirdRound[i] = secondRound[i * 2 + 1]; }
-            DebugMsg("Comparing " + values[secondRound[i * 2]] + " (" + votingMethodNames[secondRound[i * 2]] + ") and " + values[secondRound[i * 2 + 1]] + " (" + votingMethodNames[secondRound[i * 2 + 1]] + ")... " + votingMethodNames[thirdRound[i]] + " wins!");
+            LogMessage("Comparing " + values[secondRound[i * 2]] + " (" + votingMethodNames[secondRound[i * 2]] + ") and " + values[secondRound[i * 2 + 1]] + " (" + votingMethodNames[secondRound[i * 2 + 1]] + ")... " + votingMethodNames[thirdRound[i]] + " wins!");
         }
 
-        DebugMsg("Round three!");
+        LogMessage("Round three!");
         if (numbersAlphabeticalOrder[values[thirdRound[0]] % 20] <= numbersAlphabeticalOrder[values[thirdRound[1]] % 20])
             votingMethod = thirdRound[0];
         else
             votingMethod = thirdRound[1];
-        DebugMsg("Comparing " + values[thirdRound[0]] + " (" + votingMethodNames[thirdRound[0]] + ") and " + values[thirdRound[1]] + " (" + votingMethodNames[thirdRound[1]] + ")... " + votingMethodNames[votingMethod] + " wins!");
-        DebugMsg("This election uses " + votingMethodNames[votingMethod] + ".");
+        LogMessage("Comparing " + values[thirdRound[0]] + " (" + votingMethodNames[thirdRound[0]] + ") and " + values[thirdRound[1]] + " (" + votingMethodNames[thirdRound[1]] + ")... " + votingMethodNames[votingMethod] + " wins!");
+        LogMessage("This election uses " + votingMethodNames[votingMethod] + ".");
 
         // Find the votes
         char[] rows = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
@@ -282,13 +314,13 @@ public class presidentialElectionsScript : MonoBehaviour
                     break;
             }
 
-            DebugMsg("The candidates in vote #" + (i + 1) + " is sorted " + sortingMethodNames[sortingMethods[i]] + ".");
-            DebugMsg("The order they voted is: " + (votes[i][0] + 1) + +(votes[i][1] + 1) + (votes[i][2] + 1) + (votes[i][3] + 1) + ".");
+            LogMessage("The candidates in vote #" + (i + 1) + " is sorted " + sortingMethodNames[sortingMethods[i]] + ".");
+            LogMessage("The order they voted is: " + (votes[i][0] + 1) + +(votes[i][1] + 1) + (votes[i][2] + 1) + (votes[i][3] + 1) + ".");
         }
 
         // Calculate the placing
 
-        DebugMsg("Calculating the placing...");
+        LogMessage("Calculating the placing...");
         int[] votePositions = { 0, 0, 0, 0, 0, 0 };
         bool[] eliminated = { false, false, false, false };
 
@@ -414,7 +446,7 @@ public class presidentialElectionsScript : MonoBehaviour
         int lastScore = sortedCandidateScores[0];
 
         Debug.LogFormat("secrert debugg.g... (internal scores) {0} {1} {2} {3}", candidateScores[0], candidateScores[1], candidateScores[2], candidateScores[3]);
-        DebugMsg("Button #" + (candidateOrder[0] + 1) + " is in " + ordinalNumbers[candidatePlacement[candidateOrder[0]]] + " place.");
+        LogMessage("Button #" + (candidateOrder[0] + 1) + " is in " + ordinalNumbers[candidatePlacement[candidateOrder[0]]] + " place.");
 
         for (int i = 1; i < 4; i++)
         {
@@ -422,14 +454,14 @@ public class presidentialElectionsScript : MonoBehaviour
             {
                 Debug.LogFormat("secrert debugg.g... {0} {1}", sortedCandidateScores[i], lastScore);
                 candidatePlacement[candidateOrder[i]] = candidatePlacement[candidateOrder[i - 1]];
-                DebugMsg("Button #" + (candidateOrder[i] + 1) + " is also in " + ordinalNumbers[candidatePlacement[candidateOrder[i]]] + " place.");
+                LogMessage("Button #" + (candidateOrder[i] + 1) + " is also in " + ordinalNumbers[candidatePlacement[candidateOrder[i]]] + " place.");
             }
             else
             {
                 Debug.LogFormat("secrert debugg.g... {0} {1}", sortedCandidateScores[i], lastScore);
                 candidatePlacement[candidateOrder[i]] = candidatePlacement[candidateOrder[i - 1]] + 1;
                 lastScore = sortedCandidateScores[i];
-                DebugMsg("Button #" + (candidateOrder[i] + 1) + " is in " + ordinalNumbers[candidatePlacement[candidateOrder[i]]] + " place.");
+                LogMessage("Button #" + (candidateOrder[i] + 1) + " is in " + ordinalNumbers[candidatePlacement[candidateOrder[i]]] + " place.");
             }
         }
     }
@@ -438,19 +470,19 @@ public class presidentialElectionsScript : MonoBehaviour
     {
         if (!pressedButtons[btnNum])
         {
-            DebugMsg("You pressed Button #" + (btnNum + 1) + ".");
+            LogMessage("You pressed Button #" + (btnNum + 1) + ".");
 
             if (candidatePlacement[btnNum] == nextPlace)
             {
                 pressedButtons[btnNum] = true;
                 ledRenderers[btnNum].material = correctMat;
-                DebugMsg("That was correct.");
+                LogMessage("That was correct.");
 
                 if (pressedButtons.All(x => x))
                 {
                     Module.HandlePass();
                     solved = true;
-                    DebugMsg("All buttons pressed. Module solved!");
+                    LogMessage("All buttons pressed. Module solved!");
                     StartCoroutine(SolveAnim());
                 }
 
@@ -462,7 +494,7 @@ public class presidentialElectionsScript : MonoBehaviour
 
             else
             {
-                DebugMsg("That was not correct.");
+                LogMessage("That was not correct.");
                 Module.HandleStrike();
                 StartCoroutine(StrikeAnim(btnNum));
             }
@@ -540,9 +572,14 @@ public class presidentialElectionsScript : MonoBehaviour
         }
     }
 
-    void DebugMsg(string message)
+    void LogMessage(string message)
     {
         Debug.LogFormat("[Presidential Elections #{0}] {1}", moduleId, message);
+    }
+
+    void DebugMessage(string message)
+    {
+        Debug.LogFormat("<Presidential Elections #{0}> {1}", moduleId, message);
     }
 
 #pragma warning disable 414
