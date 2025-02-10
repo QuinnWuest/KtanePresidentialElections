@@ -117,10 +117,10 @@ public class presidentialElectionsScript : MonoBehaviour
         }
         else
         {
-            colorNames = rng.ShuffleFisherYates(baseColorNames);
-            partyNames = rng.ShuffleFisherYates(basePartyNames);
-            colorNumbers = rng.ShuffleFisherYates(baseColorNumbers);
-            partyNumbers = rng.ShuffleFisherYates(basePartyNumbers);
+            colorNames = rng.ShuffleFisherYates((string[])baseColorNames.Clone());
+            partyNames = rng.ShuffleFisherYates((string[])basePartyNames.Clone());
+            colorNumbers = rng.ShuffleFisherYates((int[])baseColorNumbers.Clone());
+            partyNumbers = rng.ShuffleFisherYates((int[])basePartyNumbers.Clone());
             votingMethodNames = rng.ShuffleFisherYates(Enum.GetValues(typeof(VotingMethod)).Cast<VotingMethod>().ToArray());
             sortingMethodNames = rng.ShuffleFisherYates(Enum.GetValues(typeof(SortingMethod)).Cast<SortingMethod>().ToArray());
             DebugMessage(string.Join(",", colorNames));
@@ -146,12 +146,13 @@ public class presidentialElectionsScript : MonoBehaviour
         // Generate the candidates
         for (int i = 0; i < 4; i++)
         {
-            btnRenderers[i].material = colorMats[colors[i]];
-            if (colors[i] >= 7 && colors[i] <= 12) //TODO: Change this, will probably break with ruleseed
+            int colorIndex = Array.IndexOf(baseColorNames,colorNames[colors[i]]);
+            btnRenderers[i].material = colorMats[colorIndex];
+            if (colorIndex >= 7 && colorIndex <= 12)
                 spriteRenderers[i].color = Color.white;
             else
                 spriteRenderers[i].color = Color.black;
-            spriteRenderers[i].sprite = sprites[parties[i]];
+            spriteRenderers[i].sprite = sprites[Array.IndexOf(basePartyNames,partyNames[parties[i]])];
             LogMessage("Button #" + (i + 1) + " is " + colorNames[colors[i]] + ", has the " + partyNames[parties[i]] + " symbol, and represents the candidate " + candidateNames[candidates[i]] + ".");
         }
 
