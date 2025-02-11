@@ -42,7 +42,6 @@ public class presidentialElectionsScript : MonoBehaviour
         "KONNOR", "MR PEANUT", "BLAN", "JENSON", "VANILLA", "CHOCOLA", "MARGARET THATCHER", "KONOKO", "THE DEMOGORGON", "BABE RUTH", "KEVIN LEE", "THE E PAWN", "MARCUS STUYVESANT", "KOOPA TROOPA",
         "HONG JIN-HO", "KAZEYOSHI IMAI", "DON CHEADLE", "MILLIE ROSE", "WARIO", "DEPRESSO", "GORDON FREEMAN", "NEIL CICIEREGA", "THE SHELLED ONE", "ANYONE BUT DEAF", "DART MONKEY", "SANTA CLAUS", "CTHULHU"
     };
-    static string[] spacelessPartyNames;
     static readonly string[] spacelessCandidateNames = candidateNames.Raw();
 
     static readonly int[] baseColorNumbers = { 12, 5, 13, 3, 7, 4, 8, 10, 14, 15, 2, 6, 1, 9, 11 };
@@ -65,11 +64,7 @@ public class presidentialElectionsScript : MonoBehaviour
     EdgeworkCalculation[] edgeworkCalculations;
 
     int[] sortingMethods = { 99, 99, 99, 99, 99, 99 };
-    SortingMethod[] sortingMethodNames;/* = { "in alphabetical order by their color names", "by the length of their color names", "in reading order based on the color name table",
-    "clockwise, starting from the top-right", "by the Scrabble score of the last three letters of their names", "clockwise, starting from the bottom-left", "by the number next to their party names",
-    "in reading order based on the party name table", "in alphabetical order by their names", "by the number next to their color names", "by the length of their party names",
-    "clockwise, starting from the bottom-right", "in alphabetical order by their party names", "by the Scrabble score of the first three letters of their names",
-    "by the Scrabble score of the first and last letters of their names", "by the length of their names", "clockwise, starting from the top-left", "the same way the last character voted", "in reading order" };*/
+    SortingMethod[] sortingMethodNames;
 
     int[][] votes =
     {
@@ -134,7 +129,6 @@ public class presidentialElectionsScript : MonoBehaviour
             DebugMessage(string.Join(";", sortingMethodNames.Select(i => i.ToLogString()).ToArray()));
             DebugMessage(string.Join(",", edgeworkCalculations.Select(i => i.ToString()).ToArray()));
         }
-        spacelessPartyNames = partyNames.Raw();
     }
 
     private void Start()
@@ -271,7 +265,7 @@ public class presidentialElectionsScript : MonoBehaviour
                     votes[i] = items;
                     break;
                 case SortingMethod.PartyLength:
-                    keys = new double[4] { spacelessPartyNames[parties[0]].Length, spacelessPartyNames[parties[1]].Length, spacelessPartyNames[parties[2]].Length, spacelessPartyNames[parties[3]].Length };
+                    keys = new double[4] { partyNames[parties[0]].Raw().Length, partyNames[parties[1]].Raw().Length, partyNames[parties[2]].Raw().Length, partyNames[parties[3]].Raw().Length };
                     for (int j = 0; j < 4; j++) { keys[j] -= j * .1; }
                     Array.Sort(keys, items);
                     Array.Reverse(items);
@@ -281,7 +275,7 @@ public class presidentialElectionsScript : MonoBehaviour
                     votes[i] = new int[4] { 3, 2, 0, 1 };
                     break;
                 case SortingMethod.PartyAlphabetical:
-                    keysButStringsOops = new string[4] { spacelessPartyNames[parties[0]], spacelessPartyNames[parties[1]], spacelessPartyNames[parties[2]], spacelessPartyNames[parties[3]] };
+                    keysButStringsOops = new string[4] { partyNames[parties[0]].Raw(), partyNames[parties[1]].Raw(), partyNames[parties[2]].Raw(), partyNames[parties[3]].Raw() };
                     Array.Sort(keysButStringsOops, items);
                     votes[i] = items;
                     break;
