@@ -40,7 +40,10 @@ public class presidentialElectionsScript : MonoBehaviour
         "YOUR MOM", "DICK KICKEM", "GRUNKLE SQUEAKY", "YABBAGUY", "DEAF", "EPICTOAST", "IVAN IVANSKY IVANOVICH", "SHELDON COOPER", "MR BILL CLINTON SEX SCANDAL", "VERMIN SUPREME", "DEEZ NUTS",
         "YOUR DAD", "OMEGA", "COLORS", "VOID", "LUNA", "COOLDOOM", "MCD", "CRAZYCALEB", "LIL UZI VERT", "BOB", "SIMON", "TWITCH PLAYS HIVEMIND", "TASHA", "JEB", "LOGBOT", "KANYE WEST", "JEAVER",
         "KONNOR", "MR PEANUT", "BLAN", "JENSON", "VANILLA", "CHOCOLA", "MARGARET THATCHER", "KONOKO", "THE DEMOGORGON", "BABE RUTH", "KEVIN LEE", "THE E PAWN", "MARCUS STUYVESANT", "KOOPA TROOPA",
-        "HONG JIN-HO", "KAZEYOSHI IMAI", "DON CHEADLE", "MILLIE ROSE", "WARIO", "DEPRESSO", "GORDON FREEMAN", "NEIL CICIEREGA", "THE SHELLED ONE", "ANYONE BUT DEAF", "DART MONKEY", "SANTA CLAUS", "CTHULHU"
+        "HONG JIN-HO", "KAZEYOSHI IMAI", "DON CHEADLE", "MILLIE ROSE", "WARIO", "DEPRESSO", "GORDON FREEMAN", "NEIL CICIEREGA", "THE SHELLED ONE", "ANYONE BUT DEAF", "DART MONKEY", "SANTA CLAUS", "CTHULHU",
+        "ONE BILLION LIONS","QUIZZINGTON J PUZZLE","WINSTON SMITH","ABBIE MINDWAVE","AXOCAT","KEANU REEVES","SHADOW THE HEDGEHOG","A BOILED EGG","WALTER WHITE","SPROUT SEEDLY","LADY GAGA","DR EVELYN LASAGNA",
+        "WORM ON A STRING","PEKO PEKOYAMA","KIRUMI TOJO","KSI","GRIM REAPER","TETRIMIDION","KASANE TETO","OBAMNA","MR POTATO HEAD","YOU","TIMOTHEE CHALAMET","SADDAM HUSSEIN","A CUTE SYLVEON","RIKA","PLAYBOI CARTI",
+        "KING VON","JOSEPH R. BIDEN JR","YOUR OVERLORD","NO ONE","ED BALLS","ALAN SMITHEE","DAVID","JACOB COLLIER","A BUNCH OF BALLS","BILL WURTZ","THE JOLLIEST RANCHER","PETER GRIFFIN",
     };
     static readonly string[] spacelessCandidateNames = candidateNames.Raw();
 
@@ -123,8 +126,8 @@ public class presidentialElectionsScript : MonoBehaviour
             edgeworkCalculations = rng.ShuffleFisherYates(Enum.GetValues(typeof(EdgeworkCalculation)).Cast<EdgeworkCalculation>().ToArray());
             DebugMessage(string.Join(",", colorNames));
             DebugMessage(string.Join(",", partyNames));
-            DebugMessage(string.Join(",", colorNumbers.Select(i => i.ToString()).ToArray()));
-            DebugMessage(string.Join(",", partyNumbers.Select(i => i.ToString()).ToArray()));
+            DebugMessage("Color numbers: " + string.Join(",", colorNumbers.Select(i => i.ToString()).ToArray()));
+            DebugMessage("Party numbers: " + string.Join(",", partyNumbers.Select(i => i.ToString()).ToArray()));
             DebugMessage(string.Join(",", votingMethodNames.Select(i => i.ToLogString()).ToArray()));
             DebugMessage(string.Join(";", sortingMethodNames.Select(i => i.ToLogString()).ToArray()));
             DebugMessage(string.Join(",", edgeworkCalculations.Select(i => i.ToString()).ToArray()));
@@ -145,13 +148,13 @@ public class presidentialElectionsScript : MonoBehaviour
         // Generate the candidates
         for (int i = 0; i < 4; i++)
         {
-            int colorIndex = Array.IndexOf(baseColorNames,colorNames[colors[i]]);
+            int colorIndex = Array.IndexOf(baseColorNames, colorNames[colors[i]]);
             btnRenderers[i].material = colorMats[colorIndex];
             if (colorIndex >= 7 && colorIndex <= 12)
                 spriteRenderers[i].color = Color.white;
             else
                 spriteRenderers[i].color = Color.black;
-            spriteRenderers[i].sprite = sprites[Array.IndexOf(basePartyNames,partyNames[parties[i]])];
+            spriteRenderers[i].sprite = sprites[Array.IndexOf(basePartyNames, partyNames[parties[i]])];
             LogMessage("Button #" + (i + 1) + " is " + colorNames[colors[i]] + ", has the " + partyNames[parties[i]] + " symbol, and represents the candidate " + candidateNames[candidates[i]] + ".");
         }
 
@@ -512,7 +515,7 @@ public class presidentialElectionsScript : MonoBehaviour
     int[] GetEdgeworkCalculationArray()
     {
         int[] res = new int[8];
-        for(int i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++)
         {
             switch (edgeworkCalculations[i])
             {
