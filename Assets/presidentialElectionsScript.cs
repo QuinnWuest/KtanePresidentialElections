@@ -42,7 +42,7 @@ public class presidentialElectionsScript : MonoBehaviour
         "KONNOR", "MR PEANUT", "BLAN", "JENSON", "VANILLA", "CHOCOLA", "MARGARET THATCHER", "KONOKO", "THE DEMOGORGON", "BABE RUTH", "KEVIN LEE", "THE E PAWN", "MARCUS STUYVESANT", "KOOPA TROOPA",
         "HONG JIN-HO", "KAZEYOSHI IMAI", "DON CHEADLE", "MILLIE ROSE", "WARIO", "DEPRESSO", "GORDON FREEMAN", "NEIL CICIEREGA", "THE SHELLED ONE", "ANYONE BUT DEAF", "DART MONKEY", "SANTA CLAUS", "CTHULHU"
     };
-    static readonly string[] spacelessPartyNames = basePartyNames.Raw();//TODO:Change
+    static string[] spacelessPartyNames;
     static readonly string[] spacelessCandidateNames = candidateNames.Raw();
 
     static readonly int[] baseColorNumbers = { 12, 5, 13, 3, 7, 4, 8, 10, 14, 15, 2, 6, 1, 9, 11 };
@@ -109,22 +109,22 @@ public class presidentialElectionsScript : MonoBehaviour
         MonoRandom rng = ruleSeed.GetRNG();
         if (rng.Seed == 1)
         {
-            colorNames = baseColorNames;
-            partyNames = basePartyNames;
+            colorNames = baseColorNames.Take(15).ToArray();
+            partyNames = basePartyNames.Take(16).ToArray();
             colorNumbers = baseColorNumbers;
             partyNumbers = basePartyNumbers;
             votingMethodNames = Enum.GetValues(typeof(VotingMethod)).Cast<VotingMethod>().ToArray();
-            sortingMethodNames = Enum.GetValues(typeof(SortingMethod)).Cast<SortingMethod>().ToArray();
+            sortingMethodNames = Enum.GetValues(typeof(SortingMethod)).Cast<SortingMethod>().Take(18).ToArray();
             edgeworkCalculations = Enum.GetValues(typeof(EdgeworkCalculation)).Cast<EdgeworkCalculation>().ToArray();
         }
         else
         {
-            colorNames = rng.ShuffleFisherYates((string[])baseColorNames.Clone());
-            partyNames = rng.ShuffleFisherYates((string[])basePartyNames.Clone());
+            colorNames = rng.ShuffleFisherYates((string[])baseColorNames.Clone()).Take(15).ToArray();
+            partyNames = rng.ShuffleFisherYates((string[])basePartyNames.Clone()).Take(16).ToArray();
             colorNumbers = rng.ShuffleFisherYates((int[])baseColorNumbers.Clone());
             partyNumbers = rng.ShuffleFisherYates((int[])basePartyNumbers.Clone());
             votingMethodNames = rng.ShuffleFisherYates(Enum.GetValues(typeof(VotingMethod)).Cast<VotingMethod>().ToArray());
-            sortingMethodNames = rng.ShuffleFisherYates(Enum.GetValues(typeof(SortingMethod)).Cast<SortingMethod>().ToArray());
+            sortingMethodNames = rng.ShuffleFisherYates(Enum.GetValues(typeof(SortingMethod)).Cast<SortingMethod>().ToArray()).Take(18).ToArray();
             edgeworkCalculations = rng.ShuffleFisherYates(Enum.GetValues(typeof(EdgeworkCalculation)).Cast<EdgeworkCalculation>().ToArray());
             DebugMessage(string.Join(",", colorNames));
             DebugMessage(string.Join(",", partyNames));
@@ -134,6 +134,7 @@ public class presidentialElectionsScript : MonoBehaviour
             DebugMessage(string.Join(";", sortingMethodNames.Select(i => i.ToLogString()).ToArray()));
             DebugMessage(string.Join(",", edgeworkCalculations.Select(i => i.ToString()).ToArray()));
         }
+        spacelessPartyNames = partyNames.Raw();
     }
 
     private void Start()
@@ -318,9 +319,12 @@ public class presidentialElectionsScript : MonoBehaviour
                     break;
                 case SortingMethod.CopyLastCharacter: // same way the last character voted
                     if (i == 0)
-                        votes[i] = new int[4] { 0, 1, 2, 3 };
+                        goto case SortingMethod.ReadingOrder;
                     else
                         votes[i] = votes[i - 1].ToArray();
+                    break;
+                case SortingMethod.ReadingOrder:
+                    votes[i] = new int[4] { 0, 1, 2, 3 };
                     break;
             }
 
