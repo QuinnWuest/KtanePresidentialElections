@@ -35,9 +35,91 @@
             user-select: none;
             pointer-events: none;
         }
+
+        #red { background-color: #EE5555; color: black }
+        #green { background-color: #55EE55; color: black }
+        #blue { background-color: #5588EE; color: black }
+        #yellow { background-color: #EEEE55; color: black }
+        #magenta { background-color: #EE55EE; color: black }
+        #cyan { background-color: #55EEEE; color: black }
+        #orange { background-color: #EE9955; color: black }
+        #purple { background-color: #9955EE; color: white }
+        #brown { background-color: #995522; color: white }
+        #crimson { background-color: #771111; color: white }
+        #forest { background-color: #117711; color: white }
+        #navy { background-color: #111177; color: white }
+        #black { background-color: #111111; color: white }
+        #gray { background-color: #999999; color: black }
+        #white { background-color: #EEEEEE; color: black }
     </style>
     <script>
+        const colorNames = ["Red", "Green", "Blue", "Yellow", "Magenta", "Cyan", "Orange", "Purple", "Brown", "Crimson", "Forest", "Navy", "Black", "Gray", "White"];
+        const partyNames = ["Slowpoke", "Mischief", "Conspiracy", "Trivia Murder", "Rent Is Too Damn Low", "Experimental", "Quack Quack", "Birthday", "Carcinization", "Vine Boom", "Android", "Toxicity", "Little Guy", "Vote For This", "Aaaaaaaah", "Catpeople"] 
+        const colorNumbers = ["12","5","13","3","7","4","8","10","14","15","2","6","1","9","11"]
+        const partyNumbers = ["7","15","4","2","9","8","12","13","6","11","3","16","1","5","14","10"]
+        const votingMethods = ["First-Past-The-Post", "Last-Past-The-Post", "Instant Runoff", "Coomb’s Method", "Borda Count", "Approval Voting", "STV", "Condorcet Method"];
 
+        const setContent = (colorNames, partyNames, colorNumbers, partyNumbers, votingMethods) => {
+            let colorTable = document.querySelector("#colortable")
+            while (colorTable.rows.length > 1)
+                colorTable.deleteRow(1);
+            for(let rowIndex=0;rowIndex<5;rowIndex++){
+                let row = colorTable.insertRow(-1);
+                for(let cellIndex=0;cellIndex<3;cellIndex++){
+                    let cell = row.insertCell(-1);
+                    cell.innerHTML = `${colorNames[rowIndex*3+cellIndex]} (${colorNumbers[rowIndex*3+cellIndex]})`;
+                    cell.id = colorNames[rowIndex*3+cellIndex].toLowerCase();
+                }
+            }
+
+            
+            const a = document.querySelectorAll(".st1");
+            for(let i = 0; i < votingMethods.length; i++)
+                a[i].textContent = votingMethods[i];
+            
+            /*const a = document.querySelectorAll(".list-table");
+
+
+            // Add a row for each entry of variableSets. First column is key, second is array of values separated by commas, third column in the length of the values array
+            const entries = Object.entries(variableSets);
+            for (let i = 0; i < entries.length; i++)
+            {
+                const row = a[i < 13 ? 0 : 1].insertRow(-1);
+                let cell = row.insertCell(0); //first column, make it th
+
+                // use innerHTML - 20th Century Composers has html content
+                cell.innerHTML = entries[i][0];
+                cell.outerHTML = "<th>" + cell.innerHTML + "</th>";
+                cell = row.insertCell(1);
+                cell.className = "nohighlight";
+                cell.innerHTML = entries[i][1].map(t=>"<span class='highlightable'>"+t+"</span>").join(", ");
+                cell = row.insertCell(2);
+                cell.className = "big-number";
+                cell.textContent = entries[i][1].length;
+            }
+
+            const b = document.querySelector(".equalise");
+                for (let j = 0; j < 4; j++)
+                    b.cells[j].textContent = colors[j];
+
+            const c = document.querySelector("#b-rules");
+            c.innerHTML = `Let B = the sum of the values of the ${rules[0]}, the ${rules[1]} and the ${rules[2]}. Subtract 3 until this value is less than 3, then add 1 &mdash; the B<sup>th</sup> bar from left to right, skipping over the first bar in the order, is the second bar in the order.`;
+
+            const d = document.querySelector("#if-y-axis");
+            const e = document.querySelector("#else-y-axis");
+            d.innerHTML = `If the unit on the left is &ldquo;${yAxis[0][0]}&rdquo;, the ${yAxis[0][1]} of the two unordered bars is third in the order, and the ${yAxis[0][2]} is fourth.`;
+            e.innerHTML = `Otherwise, if the unit on the left is &ldquo;${yAxis[1][0]}&rdquo;, the ${yAxis[1][1]} is third in the order, and the ${yAxis[1][2]} is fourth.`;*/
+        };
+
+        // use spread operator to clone instead of shuffling in place
+        const shuffle = (rnd, array) => rnd.shuffleFisherYates([...array]);
+
+        const setDefaultRules = rnd => setContent(colorNames, partyNames, colorNumbers, partyNumbers, votingMethods);
+
+        const setRules = rnd => {
+            setContent(shuffle(rnd,colorNames), shuffle(rnd,partyNames), shuffle(rnd,colorNumbers), shuffle(rnd,partyNumbers), shuffle(rnd, votingMethods));
+        };
+    
     </script>
 </head>
 <body>
@@ -262,7 +344,12 @@
                 <table style="width: 100%; border: hidden">
                     <tr>
                         <td style="width: 50%">
-                            <table style="text-align: center; margin: auto; font-size: 14px">
+                            <table style="text-align: center; margin: auto; font-size: 14px" id="colortable">
+                                <colgroup>
+                                    <col style="width: 33%">
+                                    <col style="width: 33%">
+                                    <col style="width: 33%">
+                                </colgroup>
                                 <tr>
                                     <td colspan=3>Color Names**</td>
                                 </tr>
@@ -287,9 +374,9 @@
                                     <td style="background-color: #111177; color: white">Navy (6)</td>
                                 </tr>
                                 <tr>
-                                    <td style="background-color: #111111; color: white; width: 33%">Black (1)</td>
-                                    <td style="background-color: #999999; color: black; width: 33%">Gray (9)</td>
-                                    <td style="background-color: #EEEEEE; color: black; width: 33%">White (11)</td>
+                                    <td style="background-color: #111111; color: white">Black (1)</td>
+                                    <td style="background-color: #999999; color: black">Gray (9)</td>
+                                    <td style="background-color: #EEEEEE; color: black">White (11)</td>
                                 </tr>
                             </table>
                         </td>
