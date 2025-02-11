@@ -62,6 +62,7 @@ public class presidentialElectionsScript : MonoBehaviour
     // Voting variables
     int votingMethod = 0;
     VotingMethod[] votingMethodNames;
+    EdgeworkCalculation[] edgeworkCalculations;
 
     int[] sortingMethods = { 99, 99, 99, 99, 99, 99 };
     SortingMethod[] sortingMethodNames;/* = { "in alphabetical order by their color names", "by the length of their color names", "in reading order based on the color name table",
@@ -114,6 +115,7 @@ public class presidentialElectionsScript : MonoBehaviour
             partyNumbers = basePartyNumbers;
             votingMethodNames = Enum.GetValues(typeof(VotingMethod)).Cast<VotingMethod>().ToArray();
             sortingMethodNames = Enum.GetValues(typeof(SortingMethod)).Cast<SortingMethod>().ToArray();
+            edgeworkCalculations = Enum.GetValues(typeof(EdgeworkCalculation)).Cast<EdgeworkCalculation>().ToArray();
         }
         else
         {
@@ -123,12 +125,14 @@ public class presidentialElectionsScript : MonoBehaviour
             partyNumbers = rng.ShuffleFisherYates((int[])basePartyNumbers.Clone());
             votingMethodNames = rng.ShuffleFisherYates(Enum.GetValues(typeof(VotingMethod)).Cast<VotingMethod>().ToArray());
             sortingMethodNames = rng.ShuffleFisherYates(Enum.GetValues(typeof(SortingMethod)).Cast<SortingMethod>().ToArray());
+            edgeworkCalculations = rng.ShuffleFisherYates(Enum.GetValues(typeof(EdgeworkCalculation)).Cast<EdgeworkCalculation>().ToArray());
             DebugMessage(string.Join(",", colorNames));
             DebugMessage(string.Join(",", partyNames));
             DebugMessage(string.Join(",", colorNumbers.Select(i => i.ToString()).ToArray()));
             DebugMessage(string.Join(",", partyNumbers.Select(i => i.ToString()).ToArray()));
             DebugMessage(string.Join(",", votingMethodNames.Select(i => i.ToLogString()).ToArray()));
             DebugMessage(string.Join(";", sortingMethodNames.Select(i => i.ToLogString()).ToArray()));
+            DebugMessage(string.Join(",", edgeworkCalculations.Select(i => i.ToString()).ToArray()));
         }
     }
 
@@ -157,7 +161,7 @@ public class presidentialElectionsScript : MonoBehaviour
         }
 
         // Find the correct voting method
-        int[] values = { Info.GetBatteryCount(Battery.AA), Info.GetBatteryCount(Battery.D) * 2, Info.GetOnIndicators().Count() * 2, Info.GetOffIndicators().Count() * 2, Info.GetPortCount(), Info.GetPortPlateCount() * 2, Info.GetSerialNumberNumbers().ElementAt(1), Info.GetSerialNumberNumbers().Reverse().ElementAt(1) };
+        int[] values = GetEdgeworkCalculationArray();
         int[] secondRound = new int[4];
         int[] thirdRound = new int[2];
 
@@ -505,6 +509,44 @@ public class presidentialElectionsScript : MonoBehaviour
                 StartCoroutine(StrikeAnim(btnNum));
             }
         }
+    }
+
+    int[] GetEdgeworkCalculationArray()
+    {
+        int[] res = new int[8];
+        for(int i = 0; i < 8; i++)
+        {
+            switch (edgeworkCalculations[i])
+            {
+                case EdgeworkCalculation.AABatteries:
+                    res[i] = Info.GetBatteryCount(Battery.AA);
+                    break;
+                case EdgeworkCalculation.DBatteries:
+                    res[i] = Info.GetBatteryCount(Battery.D) * 2;
+                    break;
+                case EdgeworkCalculation.LitIndicators:
+                    res[i] = Info.GetOnIndicators().Count() * 2;
+                    break;
+                case EdgeworkCalculation.UnlitIndicators:
+                    res[i] = Info.GetOffIndicators().Count() * 2;
+                    break;
+                case EdgeworkCalculation.Ports:
+                    res[i] = Info.GetPortCount();
+                    break;
+                case EdgeworkCalculation.PortPlates:
+                    res[i] = Info.GetPortPlateCount() * 2;
+                    break;
+                case EdgeworkCalculation.SecondDigitSN:
+                    res[i] = Info.GetSerialNumberNumbers().ElementAt(1);
+                    break;
+                case EdgeworkCalculation.SecondLastDigitSN:
+                    res[i] = Info.GetSerialNumberNumbers().Reverse().ElementAt(1);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(string.Format("edgeworkCalculations[{0}]", i), edgeworkCalculations[i], null);
+            }
+        }
+        return res;
     }
 
     void Highlight(int btnNum, bool on)
