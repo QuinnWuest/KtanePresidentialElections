@@ -58,22 +58,28 @@
             ["tortoise.svg", "Slowpoke"],
             ["monkey.svg", "Mischief"],
             ["paranoia.svg", "Conspiracy"],
-            ["guillotine.svg", "Trivia Murder"],
-            ["receive-money.svg", "Rent Is Too Damn Low"],
-            ["cryo-chamber.svg", "Experimental"],
+            ["guillotine.svg", "Trivia Murder","12"],
+            ["receive-money.svg", "Rent Is Too Damn Low","9.5"],
+            ["cryo-chamber.svg", "Experimental","12"],
             ["duck.svg", "Quack Quack"],
             ["pinata.svg", "Birthday"],
-            ["crab.svg", "Carcinization"],
+            ["crab.svg", "Carcinization","12"],
             ["shoebill.svg", "Vine Boom"],
             ["robot.svg", "Android"],
             ["gas-mask.svg", "Toxicity"],
             ["koala.svg", "Little Guy"],
-            ["telepathy.svg", "Vote For This"],
+            ["telepathy.svg", "Vote For This","12"],
             ["jason-mask.svg", "Aaaaaaaah"],
             ["feline.svg", "Catpeople"],
-            ["anthem.svg","Perfect Pitch"],
+            ["anthem.svg","Perfect Pitch","12"],
             ["heart-organ.svg","Follow Your"],
-            ["axolotl.svg","Endangered"]
+            ["axolotl.svg","Endangered"],
+            ["fire-bowl.svg","Arson"],
+            ["gecko.svg","Reptilian"],
+            ["ouroboros.svg","Party"],
+            ["oppression.svg","It's So Over"],
+            ["sitting-dog.svg","Dogpeople"],
+            ["warp-pipe.svg","Super Mario"]
         ];
         const colorNumbers = ["12","5","13","3","7","4","8","10","14","15","2","6","1","9","11"]
         const partyNumbers = ["7","15","4","2","9","8","12","13","6","11","3","16","1","5","14","10"]
@@ -130,7 +136,7 @@
             
             const b = document.querySelectorAll(".partyCell");
             for(let i = 0; i < b.length; i++){
-                b[i].innerHTML = `<img src="img/Presidential Elections/${partyNamesAndIcons[i][0]}" class="party"><p><b>${partyNamesAndIcons[i][1]}</b> ${partyNamesAndIcons[i][1] == "Quack Quack" ? "Quack" : "Party"} (${partyNumbers[i]})</p>`;
+                b[i].innerHTML = `<img src="img/Presidential Elections/${partyNamesAndIcons[i][0]}" class="party"><p ${partyNamesAndIcons[i].length == 3 ? "style=\"font-size: "+partyNamesAndIcons[i][2]+"px\"" : ""}><b>${partyNamesAndIcons[i][1]}</b> ${partyNamesAndIcons[i][1] == "Quack Quack" ? "Quack" : "Party"} (${partyNumbers[i]})</p>`;
             }
 
             const c = document.querySelectorAll(".sort td:nth-child(3)");

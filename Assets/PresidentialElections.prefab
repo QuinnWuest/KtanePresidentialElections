@@ -2131,6 +2131,12 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 9a2fa2276d9e32d48b5d96ff527ac024, type: 3}
   - {fileID: 21300000, guid: 206bfc1e5821ec040915eaf940843812, type: 3}
   - {fileID: 21300000, guid: 6fcf49a630b9fa540b8467330063d02c, type: 3}
+  - {fileID: 21300000, guid: a2b0328b17386f54caddbc153a021b32, type: 3}
+  - {fileID: 21300000, guid: 5c7443ecc60b34e4babfb368d66a24c3, type: 3}
+  - {fileID: 21300000, guid: 8807dfeea37c21246ad7f701dafb92c2, type: 3}
+  - {fileID: 21300000, guid: 825bd35d82d7c414799202764c07a92f, type: 3}
+  - {fileID: 21300000, guid: 1e6ce9ebfa485cc4388a909dc47cc94e, type: 3}
+  - {fileID: 21300000, guid: b62e091bfe3469843bb5ea28cc537ffa, type: 3}
   screenText: {fileID: 102209685904616070}
   btnSelectables:
   - {fileID: 114761712214573802}
