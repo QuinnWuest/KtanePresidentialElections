@@ -9,6 +9,9 @@
         Ports,
         PortPlates,
         SecondDigitSN,
-        SecondLastDigitSN
+        SecondLastDigitSN,
+        FirstDigitSN,
+        LastDigitSN,
+        VoltageMeter
     }
 }

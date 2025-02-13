@@ -543,6 +543,14 @@ public class presidentialElectionsScript : MonoBehaviour
                 case EdgeworkCalculation.SecondLastDigitSN:
                     res[i] = Info.GetSerialNumberNumbers().Reverse().ElementAt(1);
                     break;
+                case EdgeworkCalculation.FirstDigitSN:
+                    res[i] = Info.GetSerialNumberNumbers().ElementAt(0);
+                    break;
+                case EdgeworkCalculation.LastDigitSN:
+                    res[i] = Info.GetSerialNumberNumbers().Reverse().ElementAt(0);
+                    break;
+                case EdgeworkCalculation.VoltageMeter:
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(string.Format("edgeworkCalculations[{0}]", i), edgeworkCalculations[i], null);
             }
