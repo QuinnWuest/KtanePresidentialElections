@@ -46,7 +46,6 @@ public class presidentialElectionsScript : MonoBehaviour
         "WORM ON A STRING","PEKO PEKOYAMA","KIRUMI TOJO","KSI","GRIM REAPER","TETRIMIDION","KASANE TETO","OBAMNA","MR POTATO HEAD","YOU","TIMOTHEE CHALAMET","SADDAM HUSSEIN","A CUTE SYLVEON","RIKA","PLAYBOI CARTI",
         "KING VON","JOSEPH R. BIDEN JR","YOUR OVERLORD","NO ONE","ED BALLS","ALAN SMITHEE","DAVID","JACOB COLLIER","A BUNCH OF BALLS","BILL WURTZ","THE JOLLIEST RANCHER","PETER GRIFFIN",
     };
-    static readonly string[] spacelessCandidateNames = candidateNames.Raw();
 
     static readonly int[] baseColorNumbers = { 12, 5, 13, 3, 7, 4, 8, 10, 14, 15, 2, 6, 1, 9, 11 };
     static readonly int[] basePartyNumbers = { 7, 15, 4, 2, 9, 8, 12, 13, 6, 11, 3, 16, 1, 5, 14, 10 };
@@ -228,11 +227,7 @@ public class presidentialElectionsScript : MonoBehaviour
                     votes[i] = new int[4] { 1, 3, 2, 0 };
                     break;
                 case SortingMethod.ScrabbleLastThreeDescending:
-                    keys = new double[4] {
-                        scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[0]][spacelessCandidateNames[candidates[0]].Length - 1])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[0]][spacelessCandidateNames[candidates[0]].Length - 2])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[0]][spacelessCandidateNames[candidates[0]].Length - 3])],
-                        scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][spacelessCandidateNames[candidates[1]].Length - 1])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][spacelessCandidateNames[candidates[1]].Length - 2])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][spacelessCandidateNames[candidates[1]].Length - 3])],
-                        scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[2]][spacelessCandidateNames[candidates[2]].Length - 1])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[2]][spacelessCandidateNames[candidates[2]].Length - 2])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[2]][spacelessCandidateNames[candidates[2]].Length - 3])],
-                        scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[3]][spacelessCandidateNames[candidates[3]].Length - 1])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[3]][spacelessCandidateNames[candidates[3]].Length - 2])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[3]][spacelessCandidateNames[candidates[3]].Length - 3])]};
+                    keys = candidates.Select(c => candidateNames[c].Raw().Substring(candidateNames[c].Raw().Length - 3, 3).Select(l => (double)scrabbleScores[Array.IndexOf(alphabet, l)]).Sum()).ToArray();
                     BiasForDescending(keys);
                     Array.Sort(keys, items);
                     Array.Reverse(items);
@@ -278,29 +273,21 @@ public class presidentialElectionsScript : MonoBehaviour
                     votes[i] = items;
                     break;
                 case SortingMethod.ScrabbleFirstThreeDescending:
-                    keys = new double[4] {
-                        scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[0]][0])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[0]][1])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[0]][2])],
-                        scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][0])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][1])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][2])],
-                        scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[2]][0])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[2]][1])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[2]][2])],
-                        scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[3]][0])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[3]][1])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[3]][2])] };
+                    keys = candidates.Select(c => candidateNames[c].Raw().Substring(0, 3).Select(l => (double)scrabbleScores[Array.IndexOf(alphabet, l)]).Sum()).ToArray();
                     BiasForDescending(keys);
                     Array.Sort(keys, items);
                     Array.Reverse(items);
                     votes[i] = items;
                     break;
                 case SortingMethod.ScrabbleFirstAndLastDescending:
-                    keys = new double[4] {
-                        scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[0]][0])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[0]].Last())],
-                        scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]][0])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[1]].Last())],
-                        scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[2]][0])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[2]].Last())],
-                        scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[3]][0])] + scrabbleScores[Array.IndexOf(alphabet, spacelessCandidateNames[candidates[3]].Last())],};
+                    keys = candidates.Select(c => (double)(scrabbleScores[Array.IndexOf(alphabet, candidateNames[c].Raw()[0])] + scrabbleScores[Array.IndexOf(alphabet, candidateNames[c].Raw().Last())])).ToArray();
                     BiasForDescending(keys);
                     Array.Sort(keys, items);
                     Array.Reverse(items);
                     votes[i] = items;
                     break;
                 case SortingMethod.NameLengthDescending:
-                    keys = candidates.Select(c => (double)spacelessCandidateNames[c].Length).ToArray();
+                    keys = candidates.Select(c => (double)candidateNames[c].Raw().Length).ToArray();
                     BiasForDescending(keys);
                     Array.Sort(keys, items);
                     Array.Reverse(items);
