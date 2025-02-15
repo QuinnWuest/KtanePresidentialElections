@@ -305,6 +305,95 @@ public class presidentialElectionsScript : MonoBehaviour
                 case SortingMethod.ReadingOrder:
                     votes[i] = new int[4] { 0, 1, 2, 3 };
                     break;
+                case SortingMethod.ColorReverseAlphabetical:
+                    keysButStringsOops = colors.Select(c => colorNames[c]).ToArray();
+                    Array.Sort(keysButStringsOops, items);
+                    Array.Reverse(items);
+                    votes[i] = items;
+                    break;
+                case SortingMethod.ColorLengthAscending:
+                    keys = colors.Select(c => (double)colorNames[c].Length).ToArray();
+                    BiasForAscending(keys);
+                    Array.Sort(keys, items);
+                    votes[i] = items;
+                    break;
+                case SortingMethod.ColorReverseReadingOrder:
+                    Array.Sort(colors, items);
+                    Array.Reverse(items);
+                    votes[i] = items;
+                    break;
+                case SortingMethod.CounterTopRight:
+                    votes[i] = new int[4] { 1, 0, 2, 3 };
+                    break;
+                case SortingMethod.ScrabbleLastThreeAscending:
+                    keys = candidates.Select(c => candidateNames[c].Raw().Substring(candidateNames[c].Raw().Length - 3, 3).Select(l => (double)scrabbleScores[Array.IndexOf(alphabet, l)]).Sum()).ToArray();
+                    BiasForAscending(keys);
+                    Array.Sort(keys, items);
+                    votes[i] = items;
+                    break;
+                case SortingMethod.CounterBottomLeft:
+                    votes[i] = new int[4] { 2, 3, 1, 0 };
+                    break;
+                case SortingMethod.PartyNumberAscending:
+                    keys = parties.Select(p => (double)partyNumbers[p]).ToArray();
+                    Array.Sort(keys, items);
+                    votes[i] = items;
+                    break;
+                case SortingMethod.PartyReverseReadingOrder:
+                    Array.Sort(parties, items);
+                    Array.Reverse(items);
+                    votes[i] = items;
+                    break;
+                case SortingMethod.NameReverseAlphabetical:
+                    keysButStringsOops = candidates.Select(c => candidateNames[c]).ToArray();
+                    Array.Sort(keysButStringsOops, items);
+                    Array.Reverse(items);
+                    votes[i] = items;
+                    break;
+                case SortingMethod.ColorNumberAscending:
+                    keys = colors.Select(c => (double)colorNumbers[c]).ToArray();
+                    Array.Sort(keys, items);
+                    votes[i] = items;
+                    break;
+                case SortingMethod.PartyLengthAscending:
+                    keys = parties.Select(p => (double)partyNames[p].Raw().Length).ToArray();
+                    BiasForAscending(keys);
+                    Array.Sort(keys, items);
+                    votes[i] = items;
+                    break;
+                case SortingMethod.CounterBottomRight:
+                    votes[i] = new int[4] { 3, 1, 0, 2 };
+                    break;
+                case SortingMethod.PartyReverseAlphabetical:
+                    keysButStringsOops = parties.Select(p => partyNames[p].Raw()).ToArray();
+                    Array.Sort(keysButStringsOops, items);
+                    Array.Reverse(items);
+                    votes[i] = items;
+                    break;
+                case SortingMethod.ScrabbleFirstThreeAscending:
+                    keys = candidates.Select(c => candidateNames[c].Raw().Substring(0, 3).Select(l => (double)scrabbleScores[Array.IndexOf(alphabet, l)]).Sum()).ToArray();
+                    BiasForAscending(keys);
+                    Array.Sort(keys, items);
+                    votes[i] = items;
+                    break;
+                case SortingMethod.ScrabbleFirstAndLastAscending:
+                    keys = candidates.Select(c => (double)(scrabbleScores[Array.IndexOf(alphabet, candidateNames[c].Raw()[0])] + scrabbleScores[Array.IndexOf(alphabet, candidateNames[c].Raw().Last())])).ToArray();
+                    BiasForAscending(keys);
+                    Array.Sort(keys, items);
+                    votes[i] = items;
+                    break;
+                case SortingMethod.NameLengthAscending:
+                    keys = candidates.Select(c => (double)candidateNames[c].Raw().Length).ToArray();
+                    BiasForAscending(keys);
+                    Array.Sort(keys, items);
+                    votes[i] = items;
+                    break;
+                case SortingMethod.CounterTopLeft:
+                    votes[i] = new int[4] { 0, 2, 3, 1 };
+                    break;
+                case SortingMethod.ReverseReadingOrder:
+                    votes[i] = new int[4] { 3, 2, 1, 0 };
+                    break;
             }
 
             LogMessage("The candidates in vote #" + (i + 1) + " is sorted " + sortingMethodNames[sortingMethods[i]].ToLogString() + ".");
