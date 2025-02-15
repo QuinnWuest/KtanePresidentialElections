@@ -65,6 +65,7 @@ public class presidentialElectionsScript : MonoBehaviour
     int votingMethod = 0;
     VotingMethod[] votingMethodNames;
     EdgeworkCalculation[] edgeworkCalculations;
+    EdgeworkComparingMethod[] edgeworkComparingMethods;
 
     int[] sortingMethods = { 99, 99, 99, 99, 99, 99 };
     SortingMethod[] sortingMethodNames;
@@ -87,7 +88,6 @@ public class presidentialElectionsScript : MonoBehaviour
     //                                       A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q,  R, S, T, U, V, W, X, Y, Z
     static readonly int[] scrabbleScores = { 1, 3, 3, 2, 1, 4, 2, 4, 1, 8, 5, 1, 3, 1, 1, 3, 10, 1, 1, 1, 1, 4, 4, 8, 4, 10 };
     static readonly char[] alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
-    static readonly int[] numbersAlphabeticalOrder = { 19, 9, 18, 16, 5, 4, 12, 10, 0, 7, 14, 2, 17, 15, 6, 3, 13, 11, 1, 8 };
     byte whiteness = 255;
 
     private void Awake()
@@ -114,6 +114,7 @@ public class presidentialElectionsScript : MonoBehaviour
             votingMethodNames = Enum.GetValues(typeof(VotingMethod)).Cast<VotingMethod>().ToArray();
             sortingMethodNames = Enum.GetValues(typeof(SortingMethod)).Cast<SortingMethod>().Take(18).ToArray();
             edgeworkCalculations = Enum.GetValues(typeof(EdgeworkCalculation)).Cast<EdgeworkCalculation>().ToArray();
+            edgeworkComparingMethods = Enum.GetValues(typeof(EdgeworkComparingMethod)).Cast<EdgeworkComparingMethod>().Take(3).ToArray();
         }
         else
         {
@@ -124,6 +125,7 @@ public class presidentialElectionsScript : MonoBehaviour
             votingMethodNames = rng.ShuffleFisherYates(Enum.GetValues(typeof(VotingMethod)).Cast<VotingMethod>().ToArray());
             sortingMethodNames = rng.ShuffleFisherYates(Enum.GetValues(typeof(SortingMethod)).Cast<SortingMethod>().ToArray()).Take(18).ToArray();
             edgeworkCalculations = rng.ShuffleFisherYates(Enum.GetValues(typeof(EdgeworkCalculation)).Cast<EdgeworkCalculation>().ToArray());
+            edgeworkComparingMethods = rng.ShuffleFisherYates(Enum.GetValues(typeof(EdgeworkComparingMethod)).Cast<EdgeworkComparingMethod>().ToArray()).Take(3).ToArray();
 #if UNITY_EDITOR
             DebugMessage(string.Join(",", colorNames));
             DebugMessage(string.Join(",", partyNames));
@@ -132,6 +134,7 @@ public class presidentialElectionsScript : MonoBehaviour
             DebugMessage(string.Join(",", votingMethodNames.Select(i => i.ToLogString()).ToArray()));
             DebugMessage(string.Join(";", sortingMethodNames.Select(i => i.ToLogString()).ToArray()));
             DebugMessage(string.Join(",", edgeworkCalculations.Select(i => i.ToString()).ToArray()));
+            DebugMessage(string.Join(",", edgeworkComparingMethods.Select(i => i.ToString()).ToArray()));
 #endif
         }
     }
@@ -170,25 +173,21 @@ public class presidentialElectionsScript : MonoBehaviour
 
         for (int i = 0; i < 4; i++)
         {
-            if (values[i * 2] >= values[i * 2 + 1]) { secondRound[i] = i * 2; }
-            else { secondRound[i] = i * 2 + 1; }
+            secondRound[i] = edgeworkComparingMethods[0].Compare(values[i * 2], values[i * 2 + 1]) ?  secondRound[i] = i * 2 : secondRound[i] = i * 2 + 1;
             LogMessage("Comparing " + values[i * 2] + " (" + votingMethodNames[i * 2].ToLogString() + ") and " + values[i * 2 + 1] + " (" + votingMethodNames[i * 2 + 1].ToLogString() + ")... " + votingMethodNames[secondRound[i]].ToLogString() + " wins!");
         }
 
         LogMessage("Round two!");
         for (int i = 0; i < 2; i++)
         {
-            if (values[secondRound[i * 2]] <= values[secondRound[i * 2 + 1]]) { thirdRound[i] = secondRound[i * 2]; }
-            else { thirdRound[i] = secondRound[i * 2 + 1]; }
+            thirdRound[i] = edgeworkComparingMethods[1].Compare(values[secondRound[i * 2]], values[secondRound[i * 2 + 1]]) ?  thirdRound[i] = secondRound[i * 2] : thirdRound[i] = secondRound[i * 2 + 1];
             LogMessage("Comparing " + values[secondRound[i * 2]] + " (" + votingMethodNames[secondRound[i * 2]].ToLogString() + ") and " + values[secondRound[i * 2 + 1]] + " (" + votingMethodNames[secondRound[i * 2 + 1]].ToLogString() + ")... " + votingMethodNames[thirdRound[i]].ToLogString() + " wins!");
         }
 
         LogMessage("Round three!");
-        if (numbersAlphabeticalOrder[values[thirdRound[0]] % 20] <= numbersAlphabeticalOrder[values[thirdRound[1]] % 20])
-            votingMethod = thirdRound[0];
-        else
-            votingMethod = thirdRound[1];
+        votingMethod = edgeworkComparingMethods[2].Compare(values[thirdRound[0]], values[thirdRound[1]]) ? thirdRound[0] : thirdRound[1];
         LogMessage("Comparing " + values[thirdRound[0]] + " (" + votingMethodNames[thirdRound[0]].ToLogString() + ") and " + values[thirdRound[1]] + " (" + votingMethodNames[thirdRound[1]].ToLogString() + ")... " + votingMethodNames[votingMethod].ToLogString() + " wins!");
+        
         LogMessage("This election uses " + votingMethodNames[votingMethod].ToLogString() + ".");
 
         // Find the votes

@@ -104,6 +104,7 @@
             "clockwise, starting from the top-left.",
             "the same way the previous character voted.*",
             "in reading order.",
+            // Extra sorting methods
             "in reverse alphabetical order by their color names.",
             "by the number of letters of their color names (ascending).",
             "in reverse reading order based on the color name table.",
@@ -136,8 +137,9 @@
             "Last digit of the serial #",
             "Voltage, rounded up"
         ];
+        const edgeworkSortingMethods = ["the greatest number moves on.", "the lowest number moves on.", "modulo the two numbers by 20 and convert them to word form. The first number in alphabetical order moves on.","modulo the two numbers by 20 and convert them to word form. The last number in alphabetical order moves on."];
 
-        const setContent = (colorNames, partyNamesAndIcons, colorNumbers, partyNumbers, votingMethods, sortingMethods, edgeworkMethods) => {
+        const setContent = (colorNames, partyNamesAndIcons, colorNumbers, partyNumbers, votingMethods, sortingMethods, edgeworkMethods, edgeworkSortingMethods) => {
             let colorTable = document.querySelector("#colortable")
             while (colorTable.rows.length > 1)
                 colorTable.deleteRow(1);
@@ -167,15 +169,20 @@
             const d = document.querySelectorAll(".it");
             for(let i = 0; i < d.length; i++)
                 d[i].textContent = edgeworkMethods[i];
+
+            const e = document.querySelectorAll(".edgerule");
+            e[0].innerHTML = edgeworkSortingMethods[0] === "the lowest number moves on." ? "the <b>lowest</b> number moves on." : edgeworkSortingMethods[0];
+            e[1].innerHTML = edgeworkSortingMethods[1] === "the greatest number moves on." ? "the <b>greatest</b> number moves on." : edgeworkSortingMethods[1];
+            e[2].innerHTML = edgeworkSortingMethods[2] === "modulo the two numbers by 20 and convert them to word form. The last number in alphabetical order moves on." ? "modulo the two numbers by 20 and convert them to word form. The <b>last</b> number in alphabetical order moves on." : edgeworkSortingMethods[2];
         };
 
         // use spread operator to clone instead of shuffling in place
         const shuffle = (rnd, array) => rnd.shuffleFisherYates([...array]);
 
-        const setDefaultRules = rnd => setContent(colorNames, partyNamesAndIcons, colorNumbers, partyNumbers, votingMethods, sortingMethods, edgeworkMethods);
+        const setDefaultRules = rnd => setContent(colorNames, partyNamesAndIcons, colorNumbers, partyNumbers, votingMethods, sortingMethods, edgeworkMethods, edgeworkSortingMethods);
 
         const setRules = rnd => {
-            setContent(shuffle(rnd,colorNames), shuffle(rnd,partyNamesAndIcons), shuffle(rnd,colorNumbers), shuffle(rnd,partyNumbers), shuffle(rnd, votingMethods), shuffle(rnd, sortingMethods), shuffle(rnd, edgeworkMethods));
+            setContent(shuffle(rnd,colorNames), shuffle(rnd,partyNamesAndIcons), shuffle(rnd,colorNumbers), shuffle(rnd,partyNumbers), shuffle(rnd, votingMethods), shuffle(rnd, sortingMethods), shuffle(rnd, edgeworkMethods), shuffle(rnd, edgeworkSortingMethods));
         };
     
     </script>
@@ -211,9 +218,9 @@
                     <tr>
                         <td style="text-align: right; width: 35%">
                             <p>Arrange an eight-person tournament bracket. Use the italicized values to determine which voting system moves on.</p>
-                            <p>In the first round, the greatest number moves on.</p>
-                            <p>In the second round, the lowest number moves on.</p>
-                            <p>In the third round, modulo the two numbers by 20 and convert them to word form. The first number in alphabetical order moves on.</p>
+                            <p>In the first round, <span class="edgerule">the greatest number moves on.</span></p>
+                            <p>In the second round, <span class="edgerule">the lowest number moves on.</span></p>
+                            <p>In the third round, <span class="edgerule">modulo the two numbers by 20 and convert them to word form. The first number in alphabetical order moves on.</span></p>
                             <p>In the case of a tie, the highest position on the chart moves on.</p>
                         </td>
                         <td class="nohighlight" style="width: 65%">
