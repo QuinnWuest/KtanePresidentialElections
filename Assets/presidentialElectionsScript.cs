@@ -124,6 +124,7 @@ public class presidentialElectionsScript : MonoBehaviour
             votingMethodNames = rng.ShuffleFisherYates(Enum.GetValues(typeof(VotingMethod)).Cast<VotingMethod>().ToArray());
             sortingMethodNames = rng.ShuffleFisherYates(Enum.GetValues(typeof(SortingMethod)).Cast<SortingMethod>().ToArray()).Take(18).ToArray();
             edgeworkCalculations = rng.ShuffleFisherYates(Enum.GetValues(typeof(EdgeworkCalculation)).Cast<EdgeworkCalculation>().ToArray());
+#if UNITY_EDITOR
             DebugMessage(string.Join(",", colorNames));
             DebugMessage(string.Join(",", partyNames));
             DebugMessage("Color numbers: " + string.Join(",", colorNumbers.Select(i => i.ToString()).ToArray()));
@@ -131,6 +132,7 @@ public class presidentialElectionsScript : MonoBehaviour
             DebugMessage(string.Join(",", votingMethodNames.Select(i => i.ToLogString()).ToArray()));
             DebugMessage(string.Join(";", sortingMethodNames.Select(i => i.ToLogString()).ToArray()));
             DebugMessage(string.Join(",", edgeworkCalculations.Select(i => i.ToString()).ToArray()));
+#endif
         }
     }
 

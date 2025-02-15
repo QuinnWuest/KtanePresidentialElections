@@ -220,7 +220,7 @@ Prefab:
     - target: {fileID: 114438380697268342, guid: 39626d9df43dbcf478fd254a698348b3,
         type: 2}
       propertyPath: _seed
-      value: 1
+      value: 47
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 39626d9df43dbcf478fd254a698348b3, type: 2}
@@ -268,8 +268,7 @@ Prefab:
         type: 2}
       propertyPath: EdgeworkConfiguration
       value: 
-      objectReference: {fileID: 11400000, guid: b18af217c0b4c3e46aab28fa58cf38e0,
-        type: 2}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8814ea52310d2614a9feda02ec355ae4, type: 2}
   m_IsPrefabParent: 0
