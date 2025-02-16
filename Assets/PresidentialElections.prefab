@@ -496,6 +496,7 @@ GameObject:
   - component: {fileID: 114820096395399240}
   - component: {fileID: 114909044889590058}
   - component: {fileID: 114614265948904880}
+  - component: {fileID: 114438380697268342}
   m_Layer: 0
   m_Name: PresidentialElections
   m_TagString: Untagged
@@ -1958,6 +1959,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - KT/Mobile/DiffuseTint
+--- !u!114 &114438380697268342
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1834801995558804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adf69c2de51bd3c43bbd9bc22578ee08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _seed: 1
 --- !u!114 &114449237478941534
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2057,6 +2070,7 @@ MonoBehaviour:
   Module: {fileID: 114775561405901828}
   Info: {fileID: 114909044889590058}
   Audio: {fileID: 114820096395399240}
+  ruleSeed: {fileID: 114438380697268342}
   btnRenderers:
   - {fileID: 23409233503382092}
   - {fileID: 23262421661068180}
@@ -2114,6 +2128,15 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 2b004f46f76cd924eb3165a56c523ca0, type: 3}
   - {fileID: 21300000, guid: bb7c0f36e5dea8b4a94859a443de965f, type: 3}
   - {fileID: 21300000, guid: 6ebddaab0607f2044935344b27d3e47e, type: 3}
+  - {fileID: 21300000, guid: 9a2fa2276d9e32d48b5d96ff527ac024, type: 3}
+  - {fileID: 21300000, guid: 206bfc1e5821ec040915eaf940843812, type: 3}
+  - {fileID: 21300000, guid: 6fcf49a630b9fa540b8467330063d02c, type: 3}
+  - {fileID: 21300000, guid: a2b0328b17386f54caddbc153a021b32, type: 3}
+  - {fileID: 21300000, guid: 5c7443ecc60b34e4babfb368d66a24c3, type: 3}
+  - {fileID: 21300000, guid: 8807dfeea37c21246ad7f701dafb92c2, type: 3}
+  - {fileID: 21300000, guid: 825bd35d82d7c414799202764c07a92f, type: 3}
+  - {fileID: 21300000, guid: 1e6ce9ebfa485cc4388a909dc47cc94e, type: 3}
+  - {fileID: 21300000, guid: b62e091bfe3469843bb5ea28cc537ffa, type: 3}
   screenText: {fileID: 102209685904616070}
   btnSelectables:
   - {fileID: 114761712214573802}
